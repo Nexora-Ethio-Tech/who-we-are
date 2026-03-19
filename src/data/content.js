@@ -86,7 +86,7 @@ export const companyProfile = {
     },
   ],
   contact: {
-    inboxEmail: "hello@nexoratechnology.com",
+    inboxEmail: "yonasayeletola62@gmail.com",
     inquiryEndpoint: "",
     primary: {
       telegram: "@JYAT6200",
