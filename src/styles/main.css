@@ -362,6 +362,33 @@ body {
   margin: 0.26rem 0;
 }
 
+.contact-list a {
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(159, 197, 192, 0.45);
+  transition: color 180ms ease, border-color 180ms ease;
+}
+
+.contact-list a:visited {
+  color: var(--text);
+}
+
+.contact-list a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.contact-list a:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+  border-bottom-color: transparent;
+}
+
+.divider {
+  color: var(--muted);
+  margin: 0 0.18rem;
+}
+
 .contact-list strong {
   color: var(--text);
 }
@@ -369,6 +396,67 @@ body {
 .contact-note {
   font-size: 0.86rem;
   opacity: 0.88;
+}
+
+.inquiry-shell {
+  padding-bottom: 4rem;
+}
+
+.inquiry-panel {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.inquiry-form {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.hp-field {
+  position: absolute;
+  left: -100vw;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.inquiry-form label {
+  display: grid;
+  gap: 0.42rem;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.inquiry-form input,
+.inquiry-form textarea {
+  font: inherit;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.72rem 0.82rem;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.inquiry-form input:focus,
+.inquiry-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(71, 213, 196, 0.15);
+}
+
+.inquiry-form textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.inquiry-form .btn-primary {
+  margin-top: 0.2rem;
+  border: none;
+  cursor: pointer;
 }
 
 .reveal {
