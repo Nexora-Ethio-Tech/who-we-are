@@ -193,6 +193,11 @@ body {
   z-index: 1;
 }
 
+.neural-canvas.is-three {
+  opacity: 0.98;
+  mix-blend-mode: screen;
+}
+
 .eyebrow {
   margin: 0;
   text-transform: uppercase;

@@ -59,12 +59,149 @@ function initMagneticButtons() {
   });
 }
 
-function initNeuralCanvas() {
-  const canvas = document.querySelector("#neural-canvas");
-  if (!canvas) {
-    return;
+function initThreeNeuralScene(canvas) {
+  const THREE = window.THREE;
+  if (!THREE) {
+    return false;
   }
 
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+  camera.position.set(0, 0.2, 4.7);
+
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    alpha: true,
+    antialias: false,
+    powerPreference: "high-performance",
+  });
+  renderer.setClearColor(0x000000, 0);
+
+  const root = new THREE.Group();
+  scene.add(root);
+
+  const nodeCount = 220;
+  const sphereRadius = 1.65;
+  const rawPositions = new Float32Array(nodeCount * 3);
+
+  for (let index = 0; index < nodeCount; index += 1) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = sphereRadius * (0.6 + Math.random() * 0.4);
+
+    rawPositions[index * 3] = r * Math.sin(phi) * Math.cos(theta);
+    rawPositions[index * 3 + 1] = r * Math.cos(phi) * 0.82;
+    rawPositions[index * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+  }
+
+  const pointsGeometry = new THREE.BufferGeometry();
+  pointsGeometry.setAttribute("position", new THREE.Float32BufferAttribute(rawPositions, 3));
+
+  const pointsMaterial = new THREE.PointsMaterial({
+    color: 0x71e8de,
+    size: 0.04,
+    sizeAttenuation: true,
+    transparent: true,
+    opacity: 0.9,
+  });
+
+  const points = new THREE.Points(pointsGeometry, pointsMaterial);
+  root.add(points);
+
+  const lineVertices = [];
+  const maxDistance = 0.52;
+  for (let i = 0; i < nodeCount; i += 1) {
+    const ax = rawPositions[i * 3];
+    const ay = rawPositions[i * 3 + 1];
+    const az = rawPositions[i * 3 + 2];
+
+    for (let j = i + 1; j < nodeCount; j += 1) {
+      const bx = rawPositions[j * 3];
+      const by = rawPositions[j * 3 + 1];
+      const bz = rawPositions[j * 3 + 2];
+
+      const dx = ax - bx;
+      const dy = ay - by;
+      const dz = az - bz;
+      const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+      if (distance < maxDistance) {
+        lineVertices.push(ax, ay, az, bx, by, bz);
+      }
+    }
+  }
+
+  const linesGeometry = new THREE.BufferGeometry();
+  linesGeometry.setAttribute("position", new THREE.Float32BufferAttribute(lineVertices, 3));
+  const linesMaterial = new THREE.LineBasicMaterial({
+    color: 0x47d5c4,
+    transparent: true,
+    opacity: 0.22,
+  });
+  const lines = new THREE.LineSegments(linesGeometry, linesMaterial);
+  root.add(lines);
+
+  const core = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.76, 2),
+    new THREE.MeshBasicMaterial({
+      color: 0xff9b54,
+      transparent: true,
+      opacity: 0.17,
+      wireframe: true,
+    })
+  );
+  root.add(core);
+
+  const ambient = new THREE.AmbientLight(0x7ce7dc, 0.55);
+  const pointLight = new THREE.PointLight(0xffb789, 1.25, 12);
+  pointLight.position.set(2.2, 1.8, 2.8);
+  scene.add(ambient, pointLight);
+
+  let pointerX = 0;
+  let pointerY = 0;
+  canvas.addEventListener("pointermove", (event) => {
+    const rect = canvas.getBoundingClientRect();
+    const px = (event.clientX - rect.left) / rect.width;
+    const py = (event.clientY - rect.top) / rect.height;
+    pointerX = (px - 0.5) * 0.7;
+    pointerY = (py - 0.5) * 0.55;
+  });
+
+  const resize = () => {
+    const rect = canvas.getBoundingClientRect();
+    const width = Math.max(320, Math.floor(rect.width));
+    const height = Math.max(260, Math.floor(rect.height));
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.6);
+
+    renderer.setPixelRatio(pixelRatio);
+    renderer.setSize(width, height, false);
+
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  };
+
+  resize();
+  window.addEventListener("resize", resize);
+  canvas.classList.add("is-three");
+
+  const clock = new THREE.Clock();
+
+  const tick = () => {
+    const elapsed = clock.getElapsedTime();
+    root.rotation.y = elapsed * 0.18 + pointerX * 0.24;
+    root.rotation.x = Math.sin(elapsed * 0.35) * 0.08 + pointerY * 0.2;
+    core.rotation.x = -elapsed * 0.22;
+    core.rotation.y = elapsed * 0.24;
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(tick);
+  };
+
+  tick();
+  return true;
+}
+
+function initCanvasFallback(canvas) {
   const ctx = canvas.getContext("2d", { alpha: true });
   if (!ctx) {
     return;
@@ -166,6 +303,23 @@ function initNeuralCanvas() {
   };
 
   draw();
+}
+
+function initNeuralCanvas() {
+  const canvas = document.querySelector("#neural-canvas");
+  if (!canvas) {
+    return;
+  }
+
+  if (prefersReducedMotion()) {
+    initCanvasFallback(canvas);
+    return;
+  }
+
+  const startedThree = initThreeNeuralScene(canvas);
+  if (!startedThree) {
+    initCanvasFallback(canvas);
+  }
 }
 
 function initScrollStory() {

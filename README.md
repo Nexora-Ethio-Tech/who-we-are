@@ -15,7 +15,7 @@ Modern, modular single-page website for Nexora Technology PLC.
 
 ## Cinematic Layer
 
-- Interactive neural canvas in hero for AI-forward visual identity.
+- Interactive Three.js neural hero (with automatic 2D canvas fallback).
 - Scroll storytelling using GSAP + ScrollTrigger (CDN loaded in `index.html`).
 - Micro-interactions including magnetic CTA behavior and cursor follower.
 - Reduced-motion and touch-device fallbacks for accessibility/performance.
