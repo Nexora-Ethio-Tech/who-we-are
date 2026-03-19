@@ -7,10 +7,18 @@ Modern, modular single-page website for Nexora Technology PLC.
 - `index.html` - app entry
 - `work-with-us.html` - inquiry page for project requests
 - `src/main.js` - app composition and reveal animations
+- `src/cinematic.js` - neural canvas, scroll storytelling, and micro-interactions
 - `src/work-with-us.js` - inquiry form to email composer flow
 - `src/data/content.js` - central editable content source
 - `src/components/` - reusable UI sections
 - `src/styles/main.css` - full visual system and responsive styles
+
+## Cinematic Layer
+
+- Interactive neural canvas in hero for AI-forward visual identity.
+- Scroll storytelling using GSAP + ScrollTrigger (CDN loaded in `index.html`).
+- Micro-interactions including magnetic CTA behavior and cursor follower.
+- Reduced-motion and touch-device fallbacks for accessibility/performance.
 
 ## Run Locally
 

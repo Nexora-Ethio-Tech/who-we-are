@@ -1,6 +1,7 @@
 import { companyProfile } from "./data/content.js";
 import { renderNavbar } from "./components/navbar.js";
 import { renderHero } from "./components/hero.js";
+import { setupCinematic } from "./cinematic.js";
 import {
   renderKpis,
   renderCapabilities,
@@ -42,3 +43,5 @@ const observer = new IntersectionObserver(
 );
 
 document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+setupCinematic();

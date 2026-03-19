@@ -20,7 +20,7 @@ export function renderKpis(profile) {
     .join("");
 
   return `
-    <section class="kpis">
+    <section class="kpis story-chapter" id="kpis">
       <div class="kpi-grid">
         ${cards}
       </div>
@@ -43,7 +43,7 @@ export function renderCapabilities(profile) {
     .join("");
 
   return `
-    <section class="section-block capabilities">
+    <section class="section-block capabilities story-chapter">
       ${sectionTitle(
         "capabilities",
         "What We Build",
@@ -62,7 +62,7 @@ export function renderGovernance(profile) {
     .join("");
 
   return `
-    <section class="section-block governance">
+    <section class="section-block governance story-chapter">
       ${sectionTitle(
         "governance",
         "How We Govern and Deliver",
@@ -97,7 +97,7 @@ export function renderRoadmap(profile) {
     .join("");
 
   return `
-    <section class="section-block roadmap">
+    <section class="section-block roadmap story-chapter">
       ${sectionTitle("roadmap", "Where We Are Going", "Vision")}
       <div class="timeline-wrap">
         ${steps}
@@ -111,7 +111,7 @@ export function renderContact(profile) {
   const alternate = profile.contact.alternate;
 
   return `
-    <section class="section-block contact" id="contact">
+    <section class="section-block contact story-chapter" id="contact">
       <div class="contact-panel reveal">
         <p class="eyebrow">Contact</p>
         <h2>Let's Build Something Real Together</h2>
@@ -127,6 +127,7 @@ export function renderContact(profile) {
           <p><strong>Location:</strong> ${profile.office}</p>
         </div>
         <p class="contact-note">${profile.contact.note}</p>
+        <a class="btn-primary magnetic" href="./work-with-us.html">Start a Project</a>
       </div>
     </section>
   `;
