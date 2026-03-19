@@ -6,6 +6,52 @@ const sceneBridge = {
   setMood: null,
 };
 
+const scriptPromises = new Map();
+
+function loadScript(src) {
+  if (scriptPromises.has(src)) {
+    return scriptPromises.get(src);
+  }
+
+  const promise = new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[src="${src}"]`);
+    if (existing) {
+      existing.addEventListener("load", () => resolve(true), { once: true });
+      existing.addEventListener("error", () => reject(new Error(`Failed to load ${src}`)), {
+        once: true,
+      });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = src;
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => reject(new Error(`Failed to load ${src}`));
+    document.head.appendChild(script);
+  });
+
+  scriptPromises.set(src, promise);
+  return promise;
+}
+
+function ensureThree() {
+  if (window.THREE) {
+    return Promise.resolve(true);
+  }
+
+  return loadScript("https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.min.js");
+}
+
+async function ensureGsapBundle() {
+  if (!window.gsap) {
+    await loadScript("https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js");
+  }
+  if (!window.ScrollTrigger) {
+    await loadScript("https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js");
+  }
+}
+
 function getQualityTier() {
   const reduceMotion = prefersReducedMotion();
   const memory = Number(navigator.deviceMemory || 4);
@@ -447,8 +493,27 @@ function initNeuralCanvas() {
 
   canvas.classList.add("is-loading");
 
-  const start = () => {
+  let started = false;
+
+  const start = async () => {
+    if (started) {
+      return;
+    }
+    started = true;
+
     if (prefersReducedMotion()) {
+      initCanvasFallback(canvas, qualityTier);
+      return;
+    }
+
+    let hasThree = false;
+    try {
+      hasThree = await ensureThree();
+    } catch {
+      hasThree = false;
+    }
+
+    if (!hasThree) {
       initCanvasFallback(canvas, qualityTier);
       return;
     }
@@ -495,8 +560,14 @@ function applySceneMood(mood) {
   }
 }
 
-function initScrollStory() {
+async function initScrollStory() {
   if (prefersReducedMotion()) {
+    return;
+  }
+
+  try {
+    await ensureGsapBundle();
+  } catch {
     return;
   }
 
