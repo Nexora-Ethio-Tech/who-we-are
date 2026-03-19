@@ -19,6 +19,8 @@ Modern, modular single-page website for Nexora Technology PLC.
 - Scroll storytelling using GSAP + ScrollTrigger (CDN loaded in `index.html`).
 - Micro-interactions including magnetic CTA behavior and cursor follower.
 - Reduced-motion and touch-device fallbacks for accessibility/performance.
+- Chapter-driven scene moods: hero, capabilities, governance, roadmap, contact.
+- Lazy hero scene boot + route prefetch warmup for faster perceived loading.
 
 ## Run Locally
 

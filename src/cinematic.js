@@ -2,6 +2,10 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+const sceneBridge = {
+  setMood: null,
+};
+
 function initCursorFollower() {
   if (window.matchMedia("(pointer: coarse)").matches) {
     return;
@@ -62,7 +66,7 @@ function initMagneticButtons() {
 function initThreeNeuralScene(canvas) {
   const THREE = window.THREE;
   if (!THREE) {
-    return false;
+    return null;
   }
 
   const scene = new THREE.Scene();
@@ -152,6 +156,95 @@ function initThreeNeuralScene(canvas) {
   );
   root.add(core);
 
+  const sceneState = {
+    rotX: 0,
+    rotY: 0,
+    scale: 1,
+    lineOpacity: 0.22,
+    coreOpacity: 0.17,
+    pointSize: 0.04,
+    color: new THREE.Color(0x71e8de),
+    lineColor: new THREE.Color(0x47d5c4),
+  };
+
+  const targets = {
+    rotX: 0,
+    rotY: 0,
+    scale: 1,
+    lineOpacity: 0.22,
+    coreOpacity: 0.17,
+    pointSize: 0.04,
+    color: new THREE.Color(0x71e8de),
+    lineColor: new THREE.Color(0x47d5c4),
+  };
+
+  const moodPresets = {
+    hero: {
+      rotX: 0.02,
+      rotY: 0,
+      scale: 1,
+      lineOpacity: 0.24,
+      coreOpacity: 0.19,
+      pointSize: 0.041,
+      color: 0x71e8de,
+      lineColor: 0x47d5c4,
+    },
+    capabilities: {
+      rotX: -0.08,
+      rotY: 0.26,
+      scale: 1.06,
+      lineOpacity: 0.32,
+      coreOpacity: 0.25,
+      pointSize: 0.043,
+      color: 0x75efe4,
+      lineColor: 0x77dbc9,
+    },
+    governance: {
+      rotX: 0.14,
+      rotY: -0.3,
+      scale: 0.94,
+      lineOpacity: 0.18,
+      coreOpacity: 0.13,
+      pointSize: 0.038,
+      color: 0x8ed9ff,
+      lineColor: 0x5cb9db,
+    },
+    roadmap: {
+      rotX: 0.05,
+      rotY: 0.55,
+      scale: 1.12,
+      lineOpacity: 0.34,
+      coreOpacity: 0.29,
+      pointSize: 0.046,
+      color: 0xffbf93,
+      lineColor: 0xff9b54,
+    },
+    contact: {
+      rotX: -0.1,
+      rotY: -0.12,
+      scale: 0.98,
+      lineOpacity: 0.24,
+      coreOpacity: 0.22,
+      pointSize: 0.04,
+      color: 0xa4ffe4,
+      lineColor: 0x69d9c9,
+    },
+  };
+
+  const setMood = (name) => {
+    const preset = moodPresets[name] || moodPresets.hero;
+    targets.rotX = preset.rotX;
+    targets.rotY = preset.rotY;
+    targets.scale = preset.scale;
+    targets.lineOpacity = preset.lineOpacity;
+    targets.coreOpacity = preset.coreOpacity;
+    targets.pointSize = preset.pointSize;
+    targets.color.setHex(preset.color);
+    targets.lineColor.setHex(preset.lineColor);
+  };
+
+  setMood("hero");
+
   const ambient = new THREE.AmbientLight(0x7ce7dc, 0.55);
   const pointLight = new THREE.PointLight(0xffb789, 1.25, 12);
   pointLight.position.set(2.2, 1.8, 2.8);
@@ -183,13 +276,31 @@ function initThreeNeuralScene(canvas) {
   resize();
   window.addEventListener("resize", resize);
   canvas.classList.add("is-three");
+  canvas.classList.remove("is-loading");
 
   const clock = new THREE.Clock();
 
   const tick = () => {
     const elapsed = clock.getElapsedTime();
-    root.rotation.y = elapsed * 0.18 + pointerX * 0.24;
-    root.rotation.x = Math.sin(elapsed * 0.35) * 0.08 + pointerY * 0.2;
+    sceneState.rotX += (targets.rotX - sceneState.rotX) * 0.04;
+    sceneState.rotY += (targets.rotY - sceneState.rotY) * 0.04;
+    sceneState.scale += (targets.scale - sceneState.scale) * 0.05;
+    sceneState.lineOpacity += (targets.lineOpacity - sceneState.lineOpacity) * 0.04;
+    sceneState.coreOpacity += (targets.coreOpacity - sceneState.coreOpacity) * 0.05;
+    sceneState.pointSize += (targets.pointSize - sceneState.pointSize) * 0.05;
+    sceneState.color.lerp(targets.color, 0.05);
+    sceneState.lineColor.lerp(targets.lineColor, 0.05);
+
+    root.rotation.y = elapsed * 0.18 + pointerX * 0.24 + sceneState.rotY;
+    root.rotation.x = Math.sin(elapsed * 0.35) * 0.08 + pointerY * 0.2 + sceneState.rotX;
+    root.scale.setScalar(sceneState.scale);
+
+    linesMaterial.opacity = sceneState.lineOpacity;
+    linesMaterial.color.copy(sceneState.lineColor);
+    pointsMaterial.size = sceneState.pointSize;
+    pointsMaterial.color.copy(sceneState.color);
+    core.material.opacity = sceneState.coreOpacity;
+
     core.rotation.x = -elapsed * 0.22;
     core.rotation.y = elapsed * 0.24;
 
@@ -198,7 +309,7 @@ function initThreeNeuralScene(canvas) {
   };
 
   tick();
-  return true;
+  return { setMood };
 }
 
 function initCanvasFallback(canvas) {
@@ -246,6 +357,7 @@ function initCanvasFallback(canvas) {
 
   window.addEventListener("resize", onResize);
   onResize();
+  canvas.classList.remove("is-loading");
 
   canvas.addEventListener("pointermove", (event) => {
     const rect = canvas.getBoundingClientRect();
@@ -311,14 +423,53 @@ function initNeuralCanvas() {
     return;
   }
 
-  if (prefersReducedMotion()) {
+  canvas.classList.add("is-loading");
+
+  const start = () => {
+    if (prefersReducedMotion()) {
+      initCanvasFallback(canvas);
+      return;
+    }
+
+    const threeScene = initThreeNeuralScene(canvas);
+    if (threeScene) {
+      sceneBridge.setMood = threeScene.setMood;
+      return;
+    }
+
     initCanvasFallback(canvas);
+  };
+
+  const hero = document.querySelector("#hero");
+  if (!hero) {
+    start();
     return;
   }
 
-  const startedThree = initThreeNeuralScene(canvas);
-  if (!startedThree) {
-    initCanvasFallback(canvas);
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          observer.disconnect();
+          start();
+          return;
+        }
+      }
+    },
+    { rootMargin: "240px 0px" }
+  );
+
+  observer.observe(hero);
+
+  if (window.scrollY < 40) {
+    start();
+    observer.disconnect();
+  }
+}
+
+function applySceneMood(mood) {
+  if (typeof sceneBridge.setMood === "function") {
+    sceneBridge.setMood(mood);
   }
 }
 
@@ -334,6 +485,28 @@ function initScrollStory() {
   }
 
   gsap.registerPlugin(ScrollTrigger);
+
+  const moodTriggers = [
+    { trigger: "#hero", mood: "hero" },
+    { trigger: "#capabilities", mood: "capabilities" },
+    { trigger: "#governance", mood: "governance" },
+    { trigger: "#roadmap", mood: "roadmap" },
+    { trigger: "#contact", mood: "contact" },
+  ];
+
+  moodTriggers.forEach(({ trigger, mood }) => {
+    if (!document.querySelector(trigger)) {
+      return;
+    }
+
+    ScrollTrigger.create({
+      trigger,
+      start: "top 65%",
+      end: "bottom 35%",
+      onEnter: () => applySceneMood(mood),
+      onEnterBack: () => applySceneMood(mood),
+    });
+  });
 
   gsap.fromTo(
     ".hero-content",
@@ -391,9 +564,23 @@ function initScrollStory() {
   );
 }
 
+function warmupRoutePrefetch() {
+  const link = document.createElement("link");
+  link.rel = "prefetch";
+  link.href = "./work-with-us.html";
+  link.as = "document";
+  document.head.appendChild(link);
+}
+
 export function setupCinematic() {
   initCursorFollower();
   initMagneticButtons();
   initNeuralCanvas();
   initScrollStory();
+
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(warmupRoutePrefetch, { timeout: 1200 });
+  } else {
+    setTimeout(warmupRoutePrefetch, 700);
+  }
 }

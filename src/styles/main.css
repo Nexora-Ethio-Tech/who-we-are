@@ -191,6 +191,12 @@ body {
   height: 100%;
   opacity: 0.92;
   z-index: 1;
+  transition: opacity 420ms ease;
+}
+
+.neural-canvas.is-loading {
+  opacity: 0.45;
+  filter: saturate(0.8) blur(0.8px);
 }
 
 .neural-canvas.is-three {
@@ -256,6 +262,10 @@ body {
 .cta-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.26);
+}
+
+.magnetic {
+  will-change: transform;
 }
 
 .hero-meta {

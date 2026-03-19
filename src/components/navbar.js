@@ -15,7 +15,7 @@ export function renderNavbar(profile) {
       <nav class="nav-links">
         ${links}
       </nav>
-      <a class="cta-btn" href="./work-with-us.html">Work With Us</a>
+      <a class="cta-btn magnetic" href="./work-with-us.html">Work With Us</a>
     </header>
   `;
 }

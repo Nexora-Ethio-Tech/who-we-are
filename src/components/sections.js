@@ -43,7 +43,7 @@ export function renderCapabilities(profile) {
     .join("");
 
   return `
-    <section class="section-block capabilities story-chapter">
+    <section class="section-block capabilities story-chapter" id="capabilities-chapter">
       ${sectionTitle(
         "capabilities",
         "What We Build",
@@ -62,7 +62,7 @@ export function renderGovernance(profile) {
     .join("");
 
   return `
-    <section class="section-block governance story-chapter">
+    <section class="section-block governance story-chapter" id="governance-chapter">
       ${sectionTitle(
         "governance",
         "How We Govern and Deliver",
@@ -97,7 +97,7 @@ export function renderRoadmap(profile) {
     .join("");
 
   return `
-    <section class="section-block roadmap story-chapter">
+    <section class="section-block roadmap story-chapter" id="roadmap-chapter">
       ${sectionTitle("roadmap", "Where We Are Going", "Vision")}
       <div class="timeline-wrap">
         ${steps}
