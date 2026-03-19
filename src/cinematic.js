@@ -6,8 +6,27 @@ const sceneBridge = {
   setMood: null,
 };
 
-function initCursorFollower() {
-  if (window.matchMedia("(pointer: coarse)").matches) {
+function getQualityTier() {
+  const reduceMotion = prefersReducedMotion();
+  const memory = Number(navigator.deviceMemory || 4);
+  const cores = Number(navigator.hardwareConcurrency || 4);
+  const connection = navigator.connection;
+  const saveData = Boolean(connection && connection.saveData);
+  const slowNetwork = Boolean(connection && /2g|slow-2g/.test(connection.effectiveType || ""));
+
+  if (reduceMotion || saveData || slowNetwork || memory <= 2 || cores <= 2) {
+    return "low";
+  }
+
+  if (memory <= 4 || cores <= 4) {
+    return "medium";
+  }
+
+  return "high";
+}
+
+function initCursorFollower(qualityTier) {
+  if (window.matchMedia("(pointer: coarse)").matches || qualityTier === "low") {
     return;
   }
 
@@ -40,13 +59,13 @@ function initCursorFollower() {
   });
 }
 
-function initMagneticButtons() {
+function initMagneticButtons(qualityTier) {
   if (window.matchMedia("(pointer: coarse)").matches || prefersReducedMotion()) {
     return;
   }
 
   document.querySelectorAll(".magnetic").forEach((button) => {
-    const maxOffset = 12;
+    const maxOffset = qualityTier === "high" ? 12 : 8;
 
     button.addEventListener("mousemove", (event) => {
       const rect = button.getBoundingClientRect();
@@ -63,7 +82,7 @@ function initMagneticButtons() {
   });
 }
 
-function initThreeNeuralScene(canvas) {
+function initThreeNeuralScene(canvas, qualityTier) {
   const THREE = window.THREE;
   if (!THREE) {
     return null;
@@ -84,7 +103,7 @@ function initThreeNeuralScene(canvas) {
   const root = new THREE.Group();
   scene.add(root);
 
-  const nodeCount = 220;
+  const nodeCount = qualityTier === "high" ? 220 : 150;
   const sphereRadius = 1.65;
   const rawPositions = new Float32Array(nodeCount * 3);
 
@@ -113,7 +132,7 @@ function initThreeNeuralScene(canvas) {
   root.add(points);
 
   const lineVertices = [];
-  const maxDistance = 0.52;
+  const maxDistance = qualityTier === "high" ? 0.52 : 0.46;
   for (let i = 0; i < nodeCount; i += 1) {
     const ax = rawPositions[i * 3];
     const ay = rawPositions[i * 3 + 1];
@@ -264,7 +283,8 @@ function initThreeNeuralScene(canvas) {
     const rect = canvas.getBoundingClientRect();
     const width = Math.max(320, Math.floor(rect.width));
     const height = Math.max(260, Math.floor(rect.height));
-    const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.6);
+    const maxDpr = qualityTier === "high" ? 1.6 : 1.2;
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, maxDpr);
 
     renderer.setPixelRatio(pixelRatio);
     renderer.setSize(width, height, false);
@@ -312,14 +332,14 @@ function initThreeNeuralScene(canvas) {
   return { setMood };
 }
 
-function initCanvasFallback(canvas) {
+function initCanvasFallback(canvas, qualityTier) {
   const ctx = canvas.getContext("2d", { alpha: true });
   if (!ctx) {
     return;
   }
 
   const reduce = prefersReducedMotion();
-  const pointCount = reduce ? 24 : 52;
+  const pointCount = reduce ? 24 : qualityTier === "high" ? 52 : 36;
   const points = [];
   let width = 0;
   let height = 0;
@@ -423,21 +443,23 @@ function initNeuralCanvas() {
     return;
   }
 
+  const qualityTier = getQualityTier();
+
   canvas.classList.add("is-loading");
 
   const start = () => {
     if (prefersReducedMotion()) {
-      initCanvasFallback(canvas);
+      initCanvasFallback(canvas, qualityTier);
       return;
     }
 
-    const threeScene = initThreeNeuralScene(canvas);
+    const threeScene = initThreeNeuralScene(canvas, qualityTier);
     if (threeScene) {
       sceneBridge.setMood = threeScene.setMood;
       return;
     }
 
-    initCanvasFallback(canvas);
+    initCanvasFallback(canvas, qualityTier);
   };
 
   const hero = document.querySelector("#hero");
@@ -562,6 +584,22 @@ function initScrollStory() {
       },
     }
   );
+
+  gsap.fromTo(
+    ".positioning-card",
+    { y: 18, opacity: 0.4, scale: 0.98 },
+    {
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      stagger: 0.14,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".positioning",
+        start: "top 78%",
+      },
+    }
+  );
 }
 
 function warmupRoutePrefetch() {
@@ -573,8 +611,10 @@ function warmupRoutePrefetch() {
 }
 
 export function setupCinematic() {
-  initCursorFollower();
-  initMagneticButtons();
+  const qualityTier = getQualityTier();
+
+  initCursorFollower(qualityTier);
+  initMagneticButtons(qualityTier);
   initNeuralCanvas();
   initScrollStory();
 

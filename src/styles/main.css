@@ -292,6 +292,19 @@ body {
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 1.1rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.positioning-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), transparent);
+  opacity: 0.7;
 }
 
 .positioning-title {
