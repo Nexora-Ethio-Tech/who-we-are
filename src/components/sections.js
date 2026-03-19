@@ -1,0 +1,136 @@
+function sectionTitle(id, title, subtitle) {
+  return `
+    <div class="section-head reveal" id="${id}">
+      <p class="eyebrow">${subtitle}</p>
+      <h2>${title}</h2>
+    </div>
+  `;
+}
+
+export function renderKpis(profile) {
+  const cards = profile.kpis
+    .map(
+      (kpi) => `
+      <article class="kpi-card reveal">
+        <p class="kpi-value">${kpi.value}</p>
+        <p class="kpi-label">${kpi.label}</p>
+      </article>
+    `
+    )
+    .join("");
+
+  return `
+    <section class="kpis">
+      <div class="kpi-grid">
+        ${cards}
+      </div>
+    </section>
+  `;
+}
+
+export function renderCapabilities(profile) {
+  const blocks = profile.capabilities
+    .map(
+      (item) => `
+      <article class="feature-card reveal">
+        <h3>${item.title}</h3>
+        <ul>
+          ${item.points.map((point) => `<li>${point}</li>`).join("")}
+        </ul>
+      </article>
+    `
+    )
+    .join("");
+
+  return `
+    <section class="section-block capabilities">
+      ${sectionTitle(
+        "capabilities",
+        "What We Build",
+        "Capabilities"
+      )}
+      <div class="feature-grid">
+        ${blocks}
+      </div>
+    </section>
+  `;
+}
+
+export function renderGovernance(profile) {
+  const items = profile.governance.highlights
+    .map((item) => `<li>${item}</li>`)
+    .join("");
+
+  return `
+    <section class="section-block governance">
+      ${sectionTitle(
+        "governance",
+        "How We Govern and Deliver",
+        "Structure"
+      )}
+      <div class="governance-grid">
+        <article class="gov-card reveal">
+          <h3>Leadership</h3>
+          <p><strong>General Manager:</strong> ${profile.governance.generalManager}</p>
+          <p><strong>Deputy Manager:</strong> ${profile.governance.deputyManager}</p>
+        </article>
+        <article class="gov-card reveal">
+          <h3>Operational Principles</h3>
+          <ul>${items}</ul>
+        </article>
+      </div>
+    </section>
+  `;
+}
+
+export function renderRoadmap(profile) {
+  const steps = profile.roadmap
+    .map(
+      (step) => `
+      <article class="timeline-item reveal">
+        <p class="timeline-phase">${step.phase}</p>
+        <h3>${step.title}</h3>
+        <p>${step.description}</p>
+      </article>
+    `
+    )
+    .join("");
+
+  return `
+    <section class="section-block roadmap">
+      ${sectionTitle("roadmap", "Where We Are Going", "Vision")}
+      <div class="timeline-wrap">
+        ${steps}
+      </div>
+    </section>
+  `;
+}
+
+export function renderContact(profile) {
+  const primary = profile.contact.primary;
+  const alternate = profile.contact.alternate;
+
+  return `
+    <section class="section-block contact" id="contact">
+      <div class="contact-panel reveal">
+        <p class="eyebrow">Contact</p>
+        <h2>Let's Build Something Real Together</h2>
+        <p>
+          We collaborate with institutions, startups, and teams that want practical,
+          scalable digital systems.
+        </p>
+        <div class="contact-list">
+          <p><strong>Primary Telegram:</strong> <a href="https://t.me/${primary.telegram.replace("@", "")}" target="_blank" rel="noopener noreferrer">${primary.telegram}</a></p>
+          <p><strong>Primary Phone:</strong> <a href="tel:${primary.phone}">${primary.phone}</a></p>
+          <p><strong>Primary GitHub:</strong> <a href="${primary.github}" target="_blank" rel="noopener noreferrer">${primary.github}</a></p>
+          <p><strong>LinkedIn:</strong> <a href="${primary.linkedin}" target="_blank" rel="noopener noreferrer">${primary.linkedin}</a></p>
+          <p><strong>Alternative Telegram:</strong> <a href="https://t.me/${alternate.telegram.replace("@", "")}" target="_blank" rel="noopener noreferrer">${alternate.telegram}</a></p>
+          <p><strong>Alternative Phone:</strong> <a href="tel:${alternate.phone}">${alternate.phone}</a></p>
+          <p><strong>Alternative GitHub:</strong> <a href="${alternate.github}" target="_blank" rel="noopener noreferrer">${alternate.github}</a></p>
+          <p><strong>Location:</strong> ${profile.office}</p>
+        </div>
+        <p class="contact-note">${profile.contact.note}</p>
+      </div>
+    </section>
+  `;
+}
