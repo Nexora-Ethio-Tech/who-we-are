@@ -11,11 +11,23 @@ export const companyProfile = {
     { id: "roadmap", label: "Roadmap" },
     { id: "contact", label: "Contact" },
   ],
-  kpis: [
-    { label: "Founders", value: "2" },
-    { label: "Initial Capital", value: "20,000 ETB" },
-    { label: "Share Units", value: "20" },
-    { label: "Company Term", value: "Indefinite" },
+  positioning: [
+    {
+      title: "AI-Driven Product Delivery",
+      detail: "We architect practical intelligence into every software layer.",
+    },
+    {
+      title: "Healthcare and Education Focus",
+      detail: "We build systems that improve outcomes in high-impact sectors.",
+    },
+    {
+      title: "Enterprise-Grade Engineering",
+      detail: "Security, scale, and maintainability are baked into our process.",
+    },
+    {
+      title: "Long-Term Partnership Model",
+      detail: "From strategy to support, we co-build with ambitious teams.",
+    },
   ],
   capabilities: [
     {

@@ -277,33 +277,34 @@ body {
   font-size: 0.9rem;
 }
 
-.kpis {
+.positioning {
   margin-top: 1.2rem;
 }
 
-.kpi-grid {
+.positioning-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.8rem;
 }
 
-.kpi-card {
+.positioning-card {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 1.1rem 1rem;
 }
 
-.kpi-value {
+.positioning-title {
   margin: 0;
   font-family: "Sora", sans-serif;
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 
-.kpi-label {
-  margin: 0.45rem 0 0;
+.positioning-detail {
+  margin: 0.55rem 0 0;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
 }
 
 .section-block {
@@ -581,7 +582,7 @@ body {
     width: 100%;
   }
 
-  .kpi-grid,
+  .positioning-grid,
   .feature-grid,
   .timeline-wrap {
     grid-template-columns: 1fr 1fr;
@@ -602,7 +603,7 @@ body {
     max-width: 100%;
   }
 
-  .kpi-grid,
+  .positioning-grid,
   .feature-grid,
   .timeline-wrap {
     grid-template-columns: 1fr;

@@ -7,21 +7,21 @@ function sectionTitle(id, title, subtitle) {
   `;
 }
 
-export function renderKpis(profile) {
-  const cards = profile.kpis
+export function renderPositioning(profile) {
+  const cards = profile.positioning
     .map(
-      (kpi) => `
-      <article class="kpi-card reveal">
-        <p class="kpi-value">${kpi.value}</p>
-        <p class="kpi-label">${kpi.label}</p>
+      (item) => `
+      <article class="positioning-card reveal">
+        <p class="positioning-title">${item.title}</p>
+        <p class="positioning-detail">${item.detail}</p>
       </article>
     `
     )
     .join("");
 
   return `
-    <section class="kpis story-chapter" id="kpis">
-      <div class="kpi-grid">
+    <section class="positioning story-chapter" id="positioning">
+      <div class="positioning-grid">
         ${cards}
       </div>
     </section>

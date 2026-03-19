@@ -3,7 +3,7 @@ import { renderNavbar } from "./components/navbar.js";
 import { renderHero } from "./components/hero.js";
 import { setupCinematic } from "./cinematic.js";
 import {
-  renderKpis,
+  renderPositioning,
   renderCapabilities,
   renderGovernance,
   renderRoadmap,
@@ -21,7 +21,7 @@ app.innerHTML = `
     ${renderNavbar(companyProfile)}
     <main>
       ${renderHero(companyProfile)}
-      ${renderKpis(companyProfile)}
+      ${renderPositioning(companyProfile)}
       ${renderCapabilities(companyProfile)}
       ${renderGovernance(companyProfile)}
       ${renderRoadmap(companyProfile)}
