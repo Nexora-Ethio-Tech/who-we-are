@@ -56,8 +56,8 @@ export const companyProfile = {
     },
   ],
   governance: {
-    generalManager: "Ato Haile Debele Baysa",
-    deputyManager: "Ato Yonas Ayele Tola",
+    generalManager: "Ato Haile Debele",
+    deputyManager: "Ato Yonas Ayele",
     highlights: [
       "Limited liability based on shareholding.",
       "Profit and loss distribution follows share proportion.",
@@ -86,18 +86,18 @@ export const companyProfile = {
     },
   ],
   contact: {
-    inboxEmail: "yonasayeletola62@gmail.com",
+    inboxEmail: "yonasayeletola62@gmail.com,nexoratechnologyplc@gmail.com",
     inquiryEndpoint: "",
     primary: {
       telegram: "@JYAT6200",
       phone: "+251900011767",
       github: "https://github.com/yonayetol",
-      linkedin: "https://www.linkedin.com/in/yonas-ayele-9b9123288",
     },
     alternate: {
+       inboxEmail: "nexoratechnologyplc@gmail.com",
       telegram: "@valerioE",
       phone: "+251965758511",
-      github: "https://github.com/Ero6575",
+      github: "https://github.com/hailevalerio-65",
     },
     note:
       "Reach out through either contact option; both are active for project discussions and partnerships.",

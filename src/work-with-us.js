@@ -8,7 +8,7 @@ if (!form || !status) {
   throw new Error("Inquiry form elements not found.");
 }
 
-const targetEmail = companyProfile.contact.inboxEmail || "yonasayeletola62@gmail.com";
+const targetEmails = companyProfile.contact.inboxEmail || "nexoratechnologyplc@gmail.com,yonasayeletola62@gmail.com";
 const inquiryEndpoint = String(companyProfile.contact.inquiryEndpoint || "").trim();
 
 if (loadedAtInput) {
