@@ -8,7 +8,7 @@ if (!form || !status) {
   throw new Error("Inquiry form elements not found.");
 }
 
-const targetEmails = companyProfile.contact.inboxEmail || "nexoratechnologyplc@gmail.com,yonasayeletola62@gmail.com";
+const targetEmail = companyProfile.contact.inboxEmail || "nexoratechnologyplc@gmail.com,yonasayeletola62@gmail.com";
 const inquiryEndpoint = String(companyProfile.contact.inquiryEndpoint || "").trim();
 
 if (loadedAtInput) {
@@ -25,7 +25,7 @@ function buildMailto(name, email, organization, subject, message) {
     message,
   ].join("\n");
 
-  return `mailto:${encodeURIComponent(targetEmail)}?subject=${encodeURIComponent(
+  return `mailto:${targetEmail}?subject=${encodeURIComponent(
     `[Website] ${subject}`
   )}&body=${encodeURIComponent(body)}`;
 }
