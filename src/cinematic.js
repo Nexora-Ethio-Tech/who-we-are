@@ -154,6 +154,142 @@ function getEnhancedCapabilityTier() {
     connection: connectionInfo,
   };
 }
+
+function initUniverseBackdrop(qualityTier) {
+  if (document.querySelector(".universe-canvas")) {
+    return;
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.className = "universe-canvas";
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext("2d", { alpha: true });
+  if (!ctx) {
+    return;
+  }
+
+  const reduceMotion = prefersReducedMotion();
+  const starCount =
+    qualityTier === "high" ? 220 : qualityTier === "medium" ? 160 : 100;
+
+  const stars = [];
+  const shootingStars = [];
+  let width = 0;
+  let height = 0;
+  let nextShotAt = 0;
+
+  const rand = (min, max) => min + Math.random() * (max - min);
+
+  const resize = () => {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    stars.length = 0;
+    for (let i = 0; i < starCount; i += 1) {
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: rand(0.35, 1.55),
+        baseA: rand(0.2, 0.9),
+        twinkle: rand(0.0008, 0.0035),
+        phase: rand(0, Math.PI * 2),
+      });
+    }
+  };
+
+  const spawnShootingStar = (time) => {
+    if (reduceMotion || qualityTier === "low") {
+      return;
+    }
+
+    const fromTop = Math.random() > 0.35;
+    const x = fromTop ? rand(width * 0.05, width * 0.95) : rand(-50, width * 0.5);
+    const y = fromTop ? rand(-40, height * 0.38) : rand(0, height * 0.28);
+    const angle = rand(0.35, 0.75);
+    const speed = rand(520, 900);
+    const len = rand(110, 220);
+    const life = rand(0.65, 1.2);
+
+    shootingStars.push({
+      x,
+      y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      len,
+      age: 0,
+      life,
+      glow: rand(0.6, 1),
+      hue: Math.random() > 0.5 ? "71, 213, 196" : "255, 155, 84",
+    });
+
+    nextShotAt = time + rand(1100, 5200);
+  };
+
+  let prevTime = performance.now();
+  nextShotAt = prevTime + rand(1000, 2600);
+
+  const render = (time) => {
+    const delta = Math.min(0.05, (time - prevTime) / 1000);
+    prevTime = time;
+
+    ctx.clearRect(0, 0, width, height);
+
+    // Twinkling static stars
+    for (const star of stars) {
+      const pulse = Math.sin(time * star.twinkle + star.phase) * 0.25;
+      const alpha = Math.max(0.05, Math.min(1, star.baseA + pulse));
+      ctx.fillStyle = `rgba(234, 247, 245, ${alpha})`;
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    if (time >= nextShotAt) {
+      spawnShootingStar(time);
+    }
+
+    // Animated shooting stars
+    for (let i = shootingStars.length - 1; i >= 0; i -= 1) {
+      const s = shootingStars[i];
+      s.age += delta;
+      s.x += s.vx * delta;
+      s.y += s.vy * delta;
+
+      const t = s.age / s.life;
+      if (t >= 1) {
+        shootingStars.splice(i, 1);
+        continue;
+      }
+
+      const tailX = s.x - (s.vx / Math.max(1, Math.hypot(s.vx, s.vy))) * s.len;
+      const tailY = s.y - (s.vy / Math.max(1, Math.hypot(s.vx, s.vy))) * s.len;
+      const alpha = (1 - t) * s.glow;
+
+      const grad = ctx.createLinearGradient(s.x, s.y, tailX, tailY);
+      grad.addColorStop(0, `rgba(${s.hue}, ${alpha})`);
+      grad.addColorStop(1, `rgba(${s.hue}, 0)`);
+
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(tailX, tailY);
+      ctx.stroke();
+    }
+
+    requestAnimationFrame(render);
+  };
+
+  resize();
+  window.addEventListener("resize", resize);
+  requestAnimationFrame(render);
+}
+
 function initCursorFollower(qualityTier) {
   if (window.matchMedia("(pointer: coarse)").matches || qualityTier === "low") {
     return;
@@ -1190,6 +1326,7 @@ export function setupCinematic() {
   // Expose diagnostics for QA and performance tuning
   window.__nexoraCapabilities = capabilities;
 
+  initUniverseBackdrop(qualityTier);
   initCursorFollower(qualityTier);
   initMagneticButtons(qualityTier);
   initNeuralCanvas();
