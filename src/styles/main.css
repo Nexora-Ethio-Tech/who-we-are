@@ -925,6 +925,22 @@ body {
   position: relative;
 }
 
+.case-slider-wrap.is-linked-highlight {
+  animation: linkedPulse 700ms ease;
+}
+
+@keyframes linkedPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(71, 213, 196, 0);
+  }
+  40% {
+    box-shadow: 0 0 0 6px rgba(71, 213, 196, 0.25);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(71, 213, 196, 0);
+  }
+}
+
 .case-slider {
   position: relative;
   overflow: hidden;

@@ -89,6 +89,7 @@ export const companyProfile = {
       title: "Foundation",
       description:
         "Build robust internal systems, launch flagship software services, and establish core delivery standards.",
+      caseStudyId: "healthcare",
       focus: "Stability and delivery discipline",
       proofMetric: "4-6 weeks",
       proofLabel: "to first production milestone",
@@ -103,6 +104,7 @@ export const companyProfile = {
       title: "Scale",
       description:
         "Expand platform capabilities, deepen AI and data offerings, and grow strategic partnerships across sectors.",
+      caseStudyId: "banking",
       focus: "Throughput and reliability at growth stage",
       proofMetric: "2x-4x",
       proofLabel: "delivery throughput increase",
@@ -117,6 +119,7 @@ export const companyProfile = {
       title: "Regional Impact",
       description:
         "Open new collaborations beyond Addis Ababa and position Nexora as a trusted technology partner in the region.",
+      caseStudyId: "startup",
       focus: "Cross-sector trust and long-term outcomes",
       proofMetric: "99.9%",
       proofLabel: "service availability target",
@@ -125,6 +128,77 @@ export const companyProfile = {
         "Service-level commitments defined for enterprise clients",
         "Knowledge transfer ensures sustainable client ownership",
       ],
+    },
+  ],
+  caseStudies: [
+    {
+      id: "healthcare",
+      sector: "Healthcare",
+      title: "Patient Portal Transformation",
+      before: {
+        icon: "H",
+        challenges: [
+          "Fragmented patient records across teams",
+          "No unified appointment workflow",
+          "Manual reporting and delayed decisions",
+        ],
+      },
+      after: {
+        icon: "P",
+        improvements: [
+          "Unified and secure patient data access",
+          "Live scheduling and reduced queue time",
+          "Operational dashboards for faster decisions",
+        ],
+        metric: "85%",
+        label: "faster service flow",
+      },
+    },
+    {
+      id: "banking",
+      sector: "Banking",
+      title: "Compliance and Core Scale Upgrade",
+      before: {
+        icon: "B",
+        challenges: [
+          "Legacy release process with high manual risk",
+          "Compliance checks done late in delivery cycle",
+          "Performance degradation under peak usage",
+        ],
+      },
+      after: {
+        icon: "S",
+        improvements: [
+          "Automated release and verification pipeline",
+          "Embedded compliance gates before deployment",
+          "Stable throughput under high transaction volume",
+        ],
+        metric: "3x",
+        label: "release throughput",
+      },
+    },
+    {
+      id: "startup",
+      sector: "Startup",
+      title: "MVP to Regional Product Rollout",
+      before: {
+        icon: "M",
+        challenges: [
+          "Single-instance MVP with fragile architecture",
+          "No observability for production health",
+          "Hard to onboard new clients quickly",
+        ],
+      },
+      after: {
+        icon: "R",
+        improvements: [
+          "Modular platform ready for multi-tenant growth",
+          "Monitoring and alerting with service SLOs",
+          "Faster expansion into new markets",
+        ],
+        metric: "99.9%",
+        label: "availability target",
+      },
     },
   ],
   contact: {

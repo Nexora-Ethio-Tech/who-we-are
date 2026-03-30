@@ -1127,10 +1127,46 @@ function initShowcaseVideos() {
 function initGovernanceProof() {
   const phaseButtons = document.querySelectorAll(".engine-phase[data-phase-index]");
   const proofCards = document.querySelectorAll(".phase-proof-card[data-phase-proof]");
+  const caseSlides = document.querySelectorAll(".case-slide[data-case]");
+  const caseIndicators = document.querySelectorAll(".case-indicator[data-index]");
+  const caseSection = document.querySelector("#case-studies");
+  const caseSliderWrap = document.querySelector(".case-slider-wrap");
 
   if (!phaseButtons.length || !proofCards.length) {
     return;
   }
+
+  const activateCaseById = (caseId) => {
+    if (!caseId || !caseSlides.length) {
+      return;
+    }
+
+    let activeIndex = -1;
+    caseSlides.forEach((slide, idx) => {
+      const isActive = slide.dataset.case === caseId;
+      if (isActive) {
+        activeIndex = idx;
+        slide.setAttribute("data-active", "true");
+      } else {
+        slide.removeAttribute("data-active");
+      }
+    });
+
+    caseIndicators.forEach((indicator, idx) => {
+      if (idx === activeIndex) {
+        indicator.setAttribute("aria-current", "page");
+      } else {
+        indicator.removeAttribute("aria-current");
+      }
+    });
+
+    if (caseSliderWrap) {
+      caseSliderWrap.classList.remove("is-linked-highlight");
+      requestAnimationFrame(() => {
+        caseSliderWrap.classList.add("is-linked-highlight");
+      });
+    }
+  };
 
   const activate = (index) => {
     phaseButtons.forEach((button) => {
@@ -1142,11 +1178,25 @@ function initGovernanceProof() {
       const isActive = card.dataset.phaseProof === String(index);
       card.classList.toggle("is-active", isActive);
     });
+
+    const activeButton = Array.from(phaseButtons).find(
+      (button) => button.dataset.phaseIndex === String(index)
+    );
+    const caseId = activeButton ? activeButton.dataset.caseTarget : "";
+    activateCaseById(caseId);
   };
 
   phaseButtons.forEach((button) => {
     button.addEventListener("click", () => {
       activate(button.dataset.phaseIndex);
+
+      if (caseSection) {
+        const rect = caseSection.getBoundingClientRect();
+        const outOfView = rect.bottom < 80 || rect.top > window.innerHeight - 80;
+        if (outOfView) {
+          caseSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
     });
   });
 }
