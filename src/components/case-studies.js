@@ -10,6 +10,7 @@ export function renderCaseStudies(profile) {
       <div class="case-header">
         <span class="case-sector">${study.sector}</span>
         <h3>${study.title}</h3>
+        <p class="case-title-note">From operational bottleneck to measurable delivery outcomes.</p>
       </div>
       
       <div class="case-comparison">
@@ -25,7 +26,7 @@ export function renderCaseStudies(profile) {
         </div>
 
         <div class="case-divider">
-          <div class="arrow-icon">→</div>
+          <div class="arrow-icon">Transformation</div>
         </div>
 
         <div class="case-column after-column">

@@ -136,7 +136,7 @@ export const companyProfile = {
       sector: "Healthcare",
       title: "Patient Portal Transformation",
       before: {
-        icon: "H",
+        icon: "🏥",
         challenges: [
           "Fragmented patient records across teams",
           "No unified appointment workflow",
@@ -144,7 +144,7 @@ export const companyProfile = {
         ],
       },
       after: {
-        icon: "P",
+        icon: "✅",
         improvements: [
           "Unified and secure patient data access",
           "Live scheduling and reduced queue time",
@@ -159,7 +159,7 @@ export const companyProfile = {
       sector: "Banking",
       title: "Compliance and Core Scale Upgrade",
       before: {
-        icon: "B",
+        icon: "🏦",
         challenges: [
           "Legacy release process with high manual risk",
           "Compliance checks done late in delivery cycle",
@@ -167,7 +167,7 @@ export const companyProfile = {
         ],
       },
       after: {
-        icon: "S",
+        icon: "⚙️",
         improvements: [
           "Automated release and verification pipeline",
           "Embedded compliance gates before deployment",
@@ -182,7 +182,7 @@ export const companyProfile = {
       sector: "Startup",
       title: "MVP to Regional Product Rollout",
       before: {
-        icon: "M",
+        icon: "🚧",
         challenges: [
           "Single-instance MVP with fragile architecture",
           "No observability for production health",
@@ -190,7 +190,7 @@ export const companyProfile = {
         ],
       },
       after: {
-        icon: "R",
+        icon: "🚀",
         improvements: [
           "Modular platform ready for multi-tenant growth",
           "Monitoring and alerting with service SLOs",
