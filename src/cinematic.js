@@ -1123,6 +1123,33 @@ function initShowcaseVideos() {
 
   drawEngineCore();
 }
+
+function initGovernanceProof() {
+  const phaseButtons = document.querySelectorAll(".engine-phase[data-phase-index]");
+  const proofCards = document.querySelectorAll(".phase-proof-card[data-phase-proof]");
+
+  if (!phaseButtons.length || !proofCards.length) {
+    return;
+  }
+
+  const activate = (index) => {
+    phaseButtons.forEach((button) => {
+      const isActive = button.dataset.phaseIndex === String(index);
+      button.setAttribute("aria-expanded", isActive ? "true" : "false");
+    });
+
+    proofCards.forEach((card) => {
+      const isActive = card.dataset.phaseProof === String(index);
+      card.classList.toggle("is-active", isActive);
+    });
+  };
+
+  phaseButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      activate(button.dataset.phaseIndex);
+    });
+  });
+}
 export function setupCinematic() {
   const capabilities = getEnhancedCapabilityTier();
   const qualityTier = capabilities.tier;
@@ -1138,7 +1165,8 @@ export function setupCinematic() {
   initHeroTerms();
   initCaseStudiesSlider();
   initGovernanceEngine();
-    initAIChatWidget(); // Initialize AI chat widget
+  initGovernanceProof();
+  initAIChatWidget();
   initShowcaseVideos();
 
   if ("requestIdleCallback" in window) {

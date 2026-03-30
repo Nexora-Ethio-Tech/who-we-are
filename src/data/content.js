@@ -89,18 +89,42 @@ export const companyProfile = {
       title: "Foundation",
       description:
         "Build robust internal systems, launch flagship software services, and establish core delivery standards.",
+      focus: "Stability and delivery discipline",
+      proofMetric: "4-6 weeks",
+      proofLabel: "to first production milestone",
+      proof: [
+        "Architecture blueprint approved before build kickoff",
+        "Security baseline and coding standards enforced",
+        "Release checklist and QA gate adopted by the team",
+      ],
     },
     {
       phase: "Phase 02",
       title: "Scale",
       description:
         "Expand platform capabilities, deepen AI and data offerings, and grow strategic partnerships across sectors.",
+      focus: "Throughput and reliability at growth stage",
+      proofMetric: "2x-4x",
+      proofLabel: "delivery throughput increase",
+      proof: [
+        "CI/CD and automation reduce manual release overhead",
+        "Observability and alerts improve incident response speed",
+        "Modular services support new features without core regressions",
+      ],
     },
     {
       phase: "Phase 03",
       title: "Regional Impact",
       description:
         "Open new collaborations beyond Addis Ababa and position Nexora as a trusted technology partner in the region.",
+      focus: "Cross-sector trust and long-term outcomes",
+      proofMetric: "99.9%",
+      proofLabel: "service availability target",
+      proof: [
+        "Governance and reporting model scales with new partnerships",
+        "Service-level commitments defined for enterprise clients",
+        "Knowledge transfer ensures sustainable client ownership",
+      ],
     },
   ],
   contact: {

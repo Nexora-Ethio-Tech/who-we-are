@@ -89,17 +89,29 @@ export function renderGovernanceWithEngine(profile) {
     .join("");
 
   const phases = profile.roadmap
-    .map(
-      (phase) => `
-    <div class="engine-phase">
+    .map((phase, index) => {
+      const proofItems = (phase.proof || []).map((entry) => `<li>${entry}</li>`).join("");
+      return `
+    <button class="engine-phase" type="button" data-phase-index="${index}" aria-expanded="${index === 0 ? "true" : "false"}">
       <div class="phase-ring"></div>
       <div class="phase-label">
         <span class="phase-num">${phase.phase.split(" ")[1]}</span>
         <span class="phase-title">${phase.title}</span>
+        <span class="phase-focus">${phase.focus || "Execution focus"}</span>
       </div>
-    </div>
-  `
-    )
+    </button>
+    <article class="phase-proof-card ${index === 0 ? "is-active" : ""}" data-phase-proof="${index}">
+      <p class="proof-eyebrow">${phase.phase}</p>
+      <h4>${phase.title}</h4>
+      <p class="proof-description">${phase.description}</p>
+      <div class="proof-metric">
+        <span class="proof-metric-value">${phase.proofMetric || "-"}</span>
+        <span class="proof-metric-label">${phase.proofLabel || "Measurable outcome"}</span>
+      </div>
+      <ul class="proof-list">${proofItems}</ul>
+    </article>
+  `;
+    })
     .join("");
 
   return `

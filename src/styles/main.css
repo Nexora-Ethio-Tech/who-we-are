@@ -693,6 +693,12 @@ body {
   border-radius: 8px;
   transition: all 300ms ease;
   position: relative;
+  width: 100%;
+  text-align: left;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+  cursor: pointer;
 }
 
 .engine-phase::before {
@@ -720,6 +726,85 @@ body {
 .engine-phase:hover {
   background: rgba(71, 213, 196, 0.15);
   transform: translateX(4px);
+}
+
+.engine-phase[aria-expanded="true"] {
+  background: rgba(71, 213, 196, 0.2);
+  border-left-color: var(--accent-2);
+  transform: translateX(4px);
+}
+
+.phase-focus {
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.phase-proof-card {
+  display: none;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(71, 213, 196, 0.28);
+  background: rgba(8, 17, 18, 0.65);
+}
+
+.phase-proof-card.is-active {
+  display: block;
+}
+
+.proof-eyebrow {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.phase-proof-card h4 {
+  margin: 0.5rem 0 0;
+  font-family: "Sora", sans-serif;
+  font-size: 1.08rem;
+}
+
+.proof-description {
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.proof-metric {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.proof-metric-value {
+  font-family: "Sora", sans-serif;
+  font-size: 1.4rem;
+  color: var(--accent-2);
+  font-weight: 700;
+}
+
+.proof-metric-label {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.proof-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1rem;
+  color: var(--muted);
+}
+
+.proof-list li {
+  margin: 0.32rem 0;
+  line-height: 1.45;
+  font-size: 0.87rem;
 }
 
 .phase-ring {
