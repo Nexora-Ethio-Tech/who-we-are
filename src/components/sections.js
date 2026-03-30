@@ -175,7 +175,6 @@ export function renderContact(profile) {
         <div class="contact-list">
           <p><strong>Telegram:</strong> <a href="https://t.me/${primary.telegram.replace("@", "")}" target="_blank" rel="noopener noreferrer">${primary.telegram}</a> <span class="divider">||</span> <a href="https://t.me/${alternate.telegram.replace("@", "")}" target="_blank" rel="noopener noreferrer">${alternate.telegram}</a></p>
           <p><strong>Phone:</strong> <a href="tel:${primary.phone}">${primary.phone}</a> <span class="divider">||</span> <a href="tel:${alternate.phone}">${alternate.phone}</a></p>
-          <p><strong>LinkedIn:</strong> <a href="${primary.linkedin}" target="_blank" rel="noopener noreferrer">${primary.linkedin}</a></p>
           <p><strong>Location:</strong> ${profile.office}</p>
         </div>
         <p class="contact-note">${profile.contact.note}</p>
