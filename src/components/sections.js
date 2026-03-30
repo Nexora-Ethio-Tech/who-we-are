@@ -83,6 +83,59 @@ export function renderGovernance(profile) {
   `;
 }
 
+export function renderGovernanceWithEngine(profile) {
+  const items = profile.governance.highlights
+    .map((item) => `<li>${item}</li>`)
+    .join("");
+
+  const phases = profile.roadmap
+    .map(
+      (phase) => `
+    <div class="engine-phase">
+      <div class="phase-ring"></div>
+      <div class="phase-label">
+        <span class="phase-num">${phase.phase.split(" ")[1]}</span>
+        <span class="phase-title">${phase.title}</span>
+      </div>
+    </div>
+  `
+    )
+    .join("");
+
+  return `
+    <section class="section-block governance story-chapter" id="governance-chapter">
+      ${sectionTitle(
+        "governance",
+        "How We Govern and Deliver",
+        "Structure"
+      )}
+      
+      <div class="governance-engine-wrap reveal">
+        <div class="engine-canvas-container">
+          <canvas id="governance-engine" class="governance-engine" aria-hidden="true"></canvas>
+          <div class="engine-center-core">
+            <span class="core-label">Nexora</span>
+          </div>
+        </div>
+        <div class="engine-phases">
+          ${phases}
+        </div>
+      </div>
+      
+      <div class="governance-grid">
+        <article class="gov-card reveal">
+          <h3>Leadership</h3>
+          <p><strong>General Manager:</strong> ${profile.governance.generalManager}</p>
+          <p><strong>Deputy Manager:</strong> ${profile.governance.deputyManager}</p>
+        </article>
+        <article class="gov-card reveal">
+          <h3>Operational Principles</h3>
+          <ul>${items}</ul>
+        </article>
+      </div>
+    </section>
+  `;
+}
 export function renderRoadmap(profile) {
   const steps = profile.roadmap
     .map(
@@ -122,7 +175,7 @@ export function renderContact(profile) {
         <div class="contact-list">
           <p><strong>Telegram:</strong> <a href="https://t.me/${primary.telegram.replace("@", "")}" target="_blank" rel="noopener noreferrer">${primary.telegram}</a> <span class="divider">||</span> <a href="https://t.me/${alternate.telegram.replace("@", "")}" target="_blank" rel="noopener noreferrer">${alternate.telegram}</a></p>
           <p><strong>Phone:</strong> <a href="tel:${primary.phone}">${primary.phone}</a> <span class="divider">||</span> <a href="tel:${alternate.phone}">${alternate.phone}</a></p>
-          <p><strong>GitHub:</strong> <a href="${primary.github}" target="_blank" rel="noopener noreferrer">${primary.github}</a> <span class="divider">||</span> <a href="${alternate.github}" target="_blank" rel="noopener noreferrer">${alternate.github}</a></p>
+          <p><strong>LinkedIn:</strong> <a href="${primary.linkedin}" target="_blank" rel="noopener noreferrer">${primary.linkedin}</a></p>
           <p><strong>Location:</strong> ${profile.office}</p>
         </div>
         <p class="contact-note">${profile.contact.note}</p>

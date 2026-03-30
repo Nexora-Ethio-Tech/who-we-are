@@ -1,9 +1,27 @@
 export const companyProfile = {
   name: "Nexora Technology PLC",
   badge: "Digital Innovation Company",
-  tagline: "Engineering Ethiopia's digital leap with intelligent, scalable software.",
+  tagline: "Scale your impact with intelligent software built for real problems.",
   intro:
-    "Founded in Addis Ababa, Nexora Technology PLC builds software platforms, AI-powered systems, and digital services that help organizations operate faster, smarter, and more securely.",
+    "We partner with organizations to build software systems that grow with you. From healthcare to banking, education to startups—Nexora delivers reliable, scalable platforms that help you operate faster, smarter, and with confidence.",
+  sectorVariants: {
+    banking: {
+      tagline: "Security and scale for financial innovation.",
+      intro: "Enterprise-grade systems engineered for trust, compliance, and growth.",
+    },
+    healthcare: {
+      tagline: "Reliable systems that improve patient outcomes.",
+      intro: "Purpose-built software for healthcare providers and medical organizations.",
+    },
+    education: {
+      tagline: "Technology that empowers learning at scale.",
+      intro: "Scalable platforms designed for educators and educational institutions.",
+    },
+    startups: {
+      tagline: "MVP to market-leading product in months.",
+      intro: "Fast-track your growth with architecture built for velocity and scale.",
+    },
+  },
   office: "Addis Ababa, Ethiopia",
   nav: [
     { id: "capabilities", label: "Capabilities" },

@@ -2,6 +2,9 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+// Import AI chat widget
+import { initAIChatWidget } from "./components/ai-chat.js";
+
 const sceneBridge = {
   setMood: null,
 };
@@ -71,6 +74,86 @@ function getQualityTier() {
   return "high";
 }
 
+function getEnhancedCapabilityTier() {
+  const reduceMotion = prefersReducedMotion();
+  const memory = Number(navigator.deviceMemory || 4);
+  const cores = Number(navigator.hardwareConcurrency || 4);
+  const connection = navigator.connection;
+
+  const connectionInfo = {
+    saveData: Boolean(connection && connection.saveData),
+    effectiveType: connection ? connection.effectiveType || "unknown" : "unknown",
+    downlink: connection ? Number(connection.downlink || 0) : 0,
+    rtt: connection ? Number(connection.rtt || 0) : 0,
+  };
+
+  // Basic device checks
+  const isTouch = window.matchMedia("(pointer: coarse)").matches;
+  const isMobile = /android|iphone|ipad|mobile/i.test(navigator.userAgent);
+
+  // GPU/WebGL capability check
+  let hasWebGL = false;
+  let maxTextureSize = 0;
+  try {
+    const testCanvas = document.createElement("canvas");
+    const gl = testCanvas.getContext("webgl") || testCanvas.getContext("experimental-webgl");
+    if (gl) {
+      hasWebGL = true;
+      maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE) || 2048;
+    }
+  } catch {
+    hasWebGL = false;
+  }
+
+  // Scoring system for tier determination
+  let score = 0;
+  if (!reduceMotion) score += 1;
+  if (!connectionInfo.saveData) score += 1;
+  if (!isMobile) score += 1;
+  if (!isTouch) score += 1;
+  if (memory >= 8) score += 2;
+  else if (memory >= 4) score += 1;
+  if (cores >= 8) score += 2;
+  else if (cores >= 4) score += 1;
+  if (hasWebGL) score += 2;
+  if (maxTextureSize >= 4096) score += 1;
+  if (connectionInfo.downlink >= 5) score += 1;
+  if (connectionInfo.effectiveType === "4g") score += 1;
+  if (connectionInfo.rtt > 0 && connectionInfo.rtt < 120) score += 1;
+
+  let tier = "low";
+  if (score >= 11) {
+    tier = "high";
+  } else if (score >= 6) {
+    tier = "medium";
+  }
+
+  // Force low for critical constraints
+  if (
+    reduceMotion ||
+    connectionInfo.saveData ||
+    connectionInfo.effectiveType === "2g" ||
+    connectionInfo.effectiveType === "slow-2g" ||
+    memory <= 2 ||
+    cores <= 2 ||
+    !hasWebGL
+  ) {
+    tier = "low";
+  }
+
+  return {
+    tier,
+    score,
+    reduceMotion,
+    memory,
+    cores,
+    isTouch,
+    isMobile,
+    hasWebGL,
+    maxTextureSize,
+    connection: connectionInfo,
+  };
+}
 function initCursorFollower(qualityTier) {
   if (window.matchMedia("(pointer: coarse)").matches || qualityTier === "low") {
     return;
@@ -106,24 +189,85 @@ function initCursorFollower(qualityTier) {
 }
 
 function initMagneticButtons(qualityTier) {
+  // Disable on touch devices or if user prefers reduced motion
   if (window.matchMedia("(pointer: coarse)").matches || prefersReducedMotion()) {
     return;
   }
 
   document.querySelectorAll(".magnetic").forEach((button) => {
-    const maxOffset = qualityTier === "high" ? 12 : 8;
+    // Reduce offset on low-end devices to avoid "sticky fingers" effect
+    const maxOffset = qualityTier === "high" ? 12 : qualityTier === "medium" ? 6 : 3;
+    const pullStrength = qualityTier === "high" ? 0.22 : 0.16;
 
     button.addEventListener("mousemove", (event) => {
       const rect = button.getBoundingClientRect();
       const x = event.clientX - rect.left - rect.width / 2;
       const y = event.clientY - rect.top - rect.height / 2;
-      const dx = Math.max(-maxOffset, Math.min(maxOffset, x * 0.22));
-      const dy = Math.max(-maxOffset, Math.min(maxOffset, y * 0.22));
+      const dx = Math.max(-maxOffset, Math.min(maxOffset, x * pullStrength));
+      const dy = Math.max(-maxOffset, Math.min(maxOffset, y * pullStrength));
       button.style.transform = `translate(${dx}px, ${dy}px)`;
     });
 
     button.addEventListener("mouseleave", () => {
       button.style.transform = "translate(0, 0)";
+
+    function initHeroTerms() {
+      if (prefersReducedMotion() || window.matchMedia("(pointer: coarse)").matches) {
+        return;
+      }
+
+      const heroTerms = document.querySelectorAll(".hero-term");
+  
+      // Map term types to 3D scene animations
+      const termPresets = {
+        ai: { rotX: 0.15, rotY: 0.4, scale: 1.08, lineOpacity: 0.35 },
+        scale: { rotX: -0.1, rotY: -0.35, scale: 1.14, lineOpacity: 0.38 },
+        secure: { rotX: 0.08, rotY: 0.2, scale: 0.96, lineOpacity: 0.28 },
+        reliability: { rotX: -0.06, rotY: -0.15, scale: 1.02, lineOpacity: 0.32 },
+      };
+
+      heroTerms.forEach((term) => {
+        term.addEventListener("mouseenter", () => {
+          const preset = termPresets[term.dataset.term] || termPresets.ai;
+          if (typeof sceneBridge.setMood !== "function") return;
+      
+          // Create a temporary mood based on the term
+          const tmpScene = Object.assign({}, {
+            rotX: preset.rotX,
+            rotY: preset.rotY,
+            scale: preset.scale,
+            lineOpacity: preset.lineOpacity,
+            coreOpacity: 0.22,
+            pointSize: 0.044,
+            color: 0x71e8de,
+            lineColor: 0x47d5c4,
+          });
+          // This would require exposing the Three.js targets, 
+          // so we'll use GSAP to pulse the canvas instead
+          const canvas = document.querySelector("#neural-canvas");
+          if (canvas && window.gsap) {
+            window.gsap.to(canvas, {
+              filter: "drop-shadow(0 0 16px rgba(71, 213, 196, 0.6))",
+              scale: 1.02,
+              duration: 0.3,
+              ease: "power2.out",
+            });
+          }
+        });
+
+        term.addEventListener("mouseleave", () => {
+          const canvas = document.querySelector("#neural-canvas");
+          if (canvas && window.gsap) {
+            window.gsap.to(canvas, {
+              filter: "drop-shadow(0 0 0px rgba(71, 213, 196, 0))",
+              scale: 1,
+              duration: 0.3,
+              ease: "power2.out",
+            });
+          }
+        });
+      });
+    }
     });
   });
 }
@@ -560,6 +704,66 @@ function applySceneMood(mood) {
   }
 }
 
+// Sector-specific color schemes for mood transitions
+const sectorMoodColors = {
+  hero: {
+    primary: "#0d1718",
+    accent1: "#47d5c4",
+    accent2: "#ff9b54",
+    background: "linear-gradient(135deg, rgba(13, 23, 24, 0.95), rgba(16, 31, 33, 0.88))",
+  },
+  // Banking/Financial sector - Deep Navy + Gold (Trust)
+  capabilities: {
+    primary: "#0f1f2e",
+    accent1: "#4db8c4",
+    accent2: "#d4a574",
+    background: "linear-gradient(135deg, rgba(15, 31, 46, 0.95), rgba(17, 39, 56, 0.88))",
+  },
+  // Healthcare/Education sector - Green + Blue (Care)
+  governance: {
+    primary: "#0d2417",
+    accent1: "#2eb89e",
+    accent2: "#5eb3d8",
+    background: "linear-gradient(135deg, rgba(13, 36, 23, 0.95), rgba(15, 45, 30, 0.88))",
+  },
+  // Startup/AI sector - Electric Purple + Cyan (Innovation)
+  roadmap: {
+    primary: "#1a0a2e",
+    accent1: "#9d4edd",
+    accent2: "#00d9ff",
+    background: "linear-gradient(135deg, rgba(26, 10, 46, 0.95), rgba(35, 15, 60, 0.88))",
+  },
+  // Contact - Balanced blend
+  contact: {
+    primary: "#0d1718",
+    accent1: "#47d5c4",
+    accent2: "#ff9b54",
+    background: "linear-gradient(135deg, rgba(13, 23, 24, 0.95), rgba(16, 31, 33, 0.88))",
+  },
+};
+
+function updateSceneColors(mood) {
+  const colors = sectorMoodColors[mood] || sectorMoodColors.hero;
+  const root = document.documentElement;
+  
+  // Use GSAP to smoothly animate color transitions
+  const gsap = window.gsap;
+  if (gsap) {
+    gsap.to(root, {
+      "--mood-primary": colors.primary,
+      "--mood-accent-1": colors.accent1,
+      "--mood-accent-2": colors.accent2,
+      duration: 0.8,
+      ease: "power2.inOut",
+    });
+  } else {
+    // Fallback without GSAP
+    root.style.setProperty("--mood-primary", colors.primary);
+    root.style.setProperty("--mood-accent-1", colors.accent1);
+    root.style.setProperty("--mood-accent-2", colors.accent2);
+  }
+}
+
 async function initScrollStory() {
   if (prefersReducedMotion()) {
     return;
@@ -596,8 +800,14 @@ async function initScrollStory() {
       trigger,
       start: "top 65%",
       end: "bottom 35%",
-      onEnter: () => applySceneMood(mood),
-      onEnterBack: () => applySceneMood(mood),
+      onEnter: () => {
+        applySceneMood(mood);
+        updateSceneColors(mood);
+      },
+      onEnterBack: () => {
+        applySceneMood(mood);
+        updateSceneColors(mood);
+      },
     });
   });
 
@@ -681,13 +891,255 @@ function warmupRoutePrefetch() {
   document.head.appendChild(link);
 }
 
+function initCaseStudiesSlider() {
+  const slider = document.querySelector(".case-slider");
+  const slides = document.querySelectorAll(".case-slide");
+  const indicators = document.querySelectorAll(".case-indicator");
+  const prevBtn = document.querySelector(".case-nav.prev");
+  const nextBtn = document.querySelector(".case-nav.next");
+
+  if (!slider || slides.length === 0) {
+    return;
+  }
+
+  let currentIndex = 0;
+
+  const goToSlide = (index) => {
+    // Ensure index is within bounds
+    if (index < 0) {
+      currentIndex = slides.length - 1;
+    } else if (index >= slides.length) {
+      currentIndex = 0;
+    } else {
+      currentIndex = index;
+    }
+
+    // Update slide visibility
+    slides.forEach((slide) => {
+      slide.removeAttribute("data-active");
+    });
+    slides[currentIndex].setAttribute("data-active", "true");
+
+    // Update indicator buttons
+    indicators.forEach((indicator, idx) => {
+      if (idx === currentIndex) {
+        indicator.setAttribute("aria-current", "page");
+      } else {
+        indicator.removeAttribute("aria-current");
+      }
+    });
+  };
+
+  // Navigation buttons
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => {
+      goToSlide(currentIndex - 1);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      goToSlide(currentIndex + 1);
+    });
+  }
+
+  // Indicator buttons
+  indicators.forEach((indicator, index) => {
+    indicator.addEventListener("click", () => {
+      goToSlide(index);
+    });
+
+    // Keyboard navigation for indicators (arrow keys)
+    indicator.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        goToSlide(currentIndex - 1);
+        indicators[currentIndex]?.focus();
+      } else if (event.key === "ArrowRight") {
+        goToSlide(currentIndex + 1);
+        indicators[currentIndex]?.focus();
+      }
+    });
+  });
+
+  // Keyboard navigation for the slider
+  document.addEventListener("keydown", (event) => {
+    if (!slider.querySelector("[data-active='true']")) {
+      return;
+    }
+
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      goToSlide(currentIndex - 1);
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      goToSlide(currentIndex + 1);
+    }
+  });
+}
+
+function initGovernanceEngine() {
+  const canvas = document.querySelector("#governance-engine");
+  if (!canvas) {
+    return;
+  }
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return;
+  }
+
+function initShowcaseVideos() {
+  const showcase = document.querySelector(".showcase");
+  if (!showcase) {
+    return;
+  }
+
+  const videos = document.querySelectorAll(".showcase-video");
+  if (videos.length === 0) {
+    return;
+  }
+
+  // Intersection observer to autoplay videos when in view
+  const videoObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const video = entry.target;
+        if (entry.isIntersecting) {
+          // Show video and auto-play
+          video.style.display = "block";
+          video.play().catch(() => {
+            // Video autoplay blocked, keep placeholder visible
+            video.style.display = "none";
+          });
+        } else {
+          // Pause when out of view
+          video.pause();
+        }
+      });
+    },
+    { threshold: 0.5 }
+  );
+
+  videos.forEach((video) => {
+    videoObserver.observe(video);
+  });
+}
+
+  let width = 0;
+  let height = 0;
+  let centerX = 0;
+  let centerY = 0;
+  let rotation = 0;
+
+  const resize = () => {
+    const rect = canvas.getBoundingClientRect();
+    width = Math.max(200, Math.floor(rect.width));
+    height = Math.max(200, Math.floor(rect.height));
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    centerX = width / 2;
+    centerY = height / 2;
+  };
+
+  window.addEventListener("resize", resize);
+  resize();
+
+  const drawEngineCore = () => {
+    ctx.clearRect(0, 0, width, height);
+
+    // Draw background circles
+    for (let i = 0; i < 4; i++) {
+      const radius = 30 + i * 25;
+      ctx.strokeStyle = `rgba(71, 213, 196, ${0.12 - i * 0.02})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // Draw rotating rings
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(rotation);
+
+    // Inner rotating core
+    const speeds = [0.02, 0.015, 0.01];
+    const colors = ["#47d5c4", "#ff9b54", "#6ee2d6"];
+    const radiuses = [45, 75, 105];
+
+    for (let i = 0; i < 3; i++) {
+      const angle = (rotation * speeds[i]) % (Math.PI * 2);
+      
+      // Draw arc segments
+      ctx.strokeStyle = colors[i];
+      ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.6 - i * 0.1;
+      ctx.beginPath();
+      ctx.arc(0, 0, radiuses[i], angle, angle + Math.PI * 0.8);
+      ctx.stroke();
+
+      // Draw nodes on rings
+      for (let node = 0; node < 6; node++) {
+        const nodeAngle = (node * Math.PI * 2) / 6 + angle * 0.5;
+        const x = Math.cos(nodeAngle) * radiuses[i];
+        const y = Math.sin(nodeAngle) * radiuses[i];
+
+        ctx.globalAlpha = 0.8;
+        ctx.fillStyle = colors[i];
+        ctx.beginPath();
+        ctx.arc(x, y, 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    ctx.restore();
+
+    // Central core pulse
+    ctx.globalAlpha = 0.5 + Math.sin(rotation * 0.05) * 0.3;
+    ctx.fillStyle = "#47d5c4";
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 8, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Core glow
+    const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 18);
+    gradient.addColorStop(0, "rgba(71, 213, 196, 0.4)");
+    gradient.addColorStop(1, "rgba(71, 213, 196, 0)");
+    ctx.globalAlpha = 0.8;
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 18, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.globalAlpha = 1;
+
+    rotation += 0.6;
+    requestAnimationFrame(drawEngineCore);
+  };
+
+  drawEngineCore();
+}
 export function setupCinematic() {
-  const qualityTier = getQualityTier();
+  const capabilities = getEnhancedCapabilityTier();
+  const qualityTier = capabilities.tier;
+
+  // Expose diagnostics for QA and performance tuning
+  window.__nexoraCapabilities = capabilities;
 
   initCursorFollower(qualityTier);
   initMagneticButtons(qualityTier);
   initNeuralCanvas();
   initScrollStory();
+
+  initHeroTerms();
+  initCaseStudiesSlider();
+  initGovernanceEngine();
+    initAIChatWidget(); // Initialize AI chat widget
+  initShowcaseVideos();
 
   if ("requestIdleCallback" in window) {
     window.requestIdleCallback(warmupRoutePrefetch, { timeout: 1200 });

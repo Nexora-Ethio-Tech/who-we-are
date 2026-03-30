@@ -10,6 +10,12 @@ import {
   renderContact,
 } from "./components/sections.js";
 
+import { renderGovernanceWithEngine } from "./components/sections.js";
+
+import { renderCaseStudies } from "./components/case-studies.js";
+
+import { renderShowcase } from "./components/showcase.js";
+
 const app = document.querySelector("#app");
 
 if (!app) {
@@ -23,7 +29,9 @@ app.innerHTML = `
       ${renderHero(companyProfile)}
       ${renderPositioning(companyProfile)}
       ${renderCapabilities(companyProfile)}
-      ${renderGovernance(companyProfile)}
+        ${renderCaseStudies(companyProfile)}
+        ${renderShowcase(companyProfile)}
+      ${renderGovernanceWithEngine(companyProfile)}
       ${renderRoadmap(companyProfile)}
       ${renderContact(companyProfile)}
     </main>
