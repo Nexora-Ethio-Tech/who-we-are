@@ -210,64 +210,49 @@ function initMagneticButtons(qualityTier) {
 
     button.addEventListener("mouseleave", () => {
       button.style.transform = "translate(0, 0)";
+    });
+  });
+}
 
-    function initHeroTerms() {
-      if (prefersReducedMotion() || window.matchMedia("(pointer: coarse)").matches) {
-        return;
+function initHeroTerms() {
+  if (prefersReducedMotion() || window.matchMedia("(pointer: coarse)").matches) {
+    return;
+  }
+
+  const heroTerms = document.querySelectorAll(".hero-term");
+
+  // Map term types to subtle canvas responses
+  const termPresets = {
+    ai: { glow: "rgba(71, 213, 196, 0.6)" },
+    scale: { glow: "rgba(255, 155, 84, 0.55)" },
+    secure: { glow: "rgba(92, 185, 219, 0.55)" },
+    reliability: { glow: "rgba(105, 217, 201, 0.55)" },
+  };
+
+  heroTerms.forEach((term) => {
+    term.addEventListener("mouseenter", () => {
+      const preset = termPresets[term.dataset.term] || termPresets.ai;
+      const canvas = document.querySelector("#neural-canvas");
+      if (canvas && window.gsap) {
+        window.gsap.to(canvas, {
+          filter: `drop-shadow(0 0 16px ${preset.glow})`,
+          scale: 1.02,
+          duration: 0.3,
+          ease: "power2.out",
+        });
       }
+    });
 
-      const heroTerms = document.querySelectorAll(".hero-term");
-  
-      // Map term types to 3D scene animations
-      const termPresets = {
-        ai: { rotX: 0.15, rotY: 0.4, scale: 1.08, lineOpacity: 0.35 },
-        scale: { rotX: -0.1, rotY: -0.35, scale: 1.14, lineOpacity: 0.38 },
-        secure: { rotX: 0.08, rotY: 0.2, scale: 0.96, lineOpacity: 0.28 },
-        reliability: { rotX: -0.06, rotY: -0.15, scale: 1.02, lineOpacity: 0.32 },
-      };
-
-      heroTerms.forEach((term) => {
-        term.addEventListener("mouseenter", () => {
-          const preset = termPresets[term.dataset.term] || termPresets.ai;
-          if (typeof sceneBridge.setMood !== "function") return;
-      
-          // Create a temporary mood based on the term
-          const tmpScene = Object.assign({}, {
-            rotX: preset.rotX,
-            rotY: preset.rotY,
-            scale: preset.scale,
-            lineOpacity: preset.lineOpacity,
-            coreOpacity: 0.22,
-            pointSize: 0.044,
-            color: 0x71e8de,
-            lineColor: 0x47d5c4,
-          });
-          // This would require exposing the Three.js targets, 
-          // so we'll use GSAP to pulse the canvas instead
-          const canvas = document.querySelector("#neural-canvas");
-          if (canvas && window.gsap) {
-            window.gsap.to(canvas, {
-              filter: "drop-shadow(0 0 16px rgba(71, 213, 196, 0.6))",
-              scale: 1.02,
-              duration: 0.3,
-              ease: "power2.out",
-            });
-          }
+    term.addEventListener("mouseleave", () => {
+      const canvas = document.querySelector("#neural-canvas");
+      if (canvas && window.gsap) {
+        window.gsap.to(canvas, {
+          filter: "drop-shadow(0 0 0px rgba(71, 213, 196, 0))",
+          scale: 1,
+          duration: 0.3,
+          ease: "power2.out",
         });
-
-        term.addEventListener("mouseleave", () => {
-          const canvas = document.querySelector("#neural-canvas");
-          if (canvas && window.gsap) {
-            window.gsap.to(canvas, {
-              filter: "drop-shadow(0 0 0px rgba(71, 213, 196, 0))",
-              scale: 1,
-              duration: 0.3,
-              ease: "power2.out",
-            });
-          }
-        });
-      });
-    }
+      }
     });
   });
 }
@@ -988,43 +973,6 @@ function initGovernanceEngine() {
     return;
   }
 
-function initShowcaseVideos() {
-  const showcase = document.querySelector(".showcase");
-  if (!showcase) {
-    return;
-  }
-
-  const videos = document.querySelectorAll(".showcase-video");
-  if (videos.length === 0) {
-    return;
-  }
-
-  // Intersection observer to autoplay videos when in view
-  const videoObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        const video = entry.target;
-        if (entry.isIntersecting) {
-          // Show video and auto-play
-          video.style.display = "block";
-          video.play().catch(() => {
-            // Video autoplay blocked, keep placeholder visible
-            video.style.display = "none";
-          });
-        } else {
-          // Pause when out of view
-          video.pause();
-        }
-      });
-    },
-    { threshold: 0.5 }
-  );
-
-  videos.forEach((video) => {
-    videoObserver.observe(video);
-  });
-}
-
   let width = 0;
   let height = 0;
   let centerX = 0;
@@ -1122,6 +1070,40 @@ function initShowcaseVideos() {
   };
 
   drawEngineCore();
+}
+
+function initShowcaseVideos() {
+  const showcase = document.querySelector(".showcase");
+  if (!showcase) {
+    return;
+  }
+
+  const videos = document.querySelectorAll(".showcase-video");
+  if (videos.length === 0) {
+    return;
+  }
+
+  // Intersection observer to autoplay videos when in view
+  const videoObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const video = entry.target;
+        if (entry.isIntersecting) {
+          video.style.display = "block";
+          video.play().catch(() => {
+            video.style.display = "none";
+          });
+        } else {
+          video.pause();
+        }
+      });
+    },
+    { threshold: 0.5 }
+  );
+
+  videos.forEach((video) => {
+    videoObserver.observe(video);
+  });
 }
 
 function initGovernanceProof() {
