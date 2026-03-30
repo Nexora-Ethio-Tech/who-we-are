@@ -91,8 +91,9 @@ export function renderGovernanceWithEngine(profile) {
   const phases = profile.roadmap
     .map((phase, index) => {
       const proofItems = (phase.proof || []).map((entry) => `<li>${entry}</li>`).join("");
+      const proofId = `phase-proof-${index}`;
       return `
-    <button class="engine-phase" type="button" data-phase-index="${index}" data-case-target="${phase.caseStudyId || ""}" aria-expanded="${index === 0 ? "true" : "false"}">
+    <button class="engine-phase" type="button" data-phase-index="${index}" data-case-target="${phase.caseStudyId || ""}" aria-expanded="${index === 0 ? "true" : "false"}" aria-controls="${proofId}">
       <div class="phase-ring"></div>
       <div class="phase-label">
         <span class="phase-num">${phase.phase.split(" ")[1]}</span>
@@ -100,7 +101,7 @@ export function renderGovernanceWithEngine(profile) {
         <span class="phase-focus">${phase.focus || "Execution focus"}</span>
       </div>
     </button>
-    <article class="phase-proof-card ${index === 0 ? "is-active" : ""}" data-phase-proof="${index}" data-case-target="${phase.caseStudyId || ""}">
+    <article id="${proofId}" class="phase-proof-card ${index === 0 ? "is-active" : ""}" data-phase-proof="${index}" data-case-target="${phase.caseStudyId || ""}" ${index === 0 ? "" : "hidden"}>
       <p class="proof-eyebrow">${phase.phase}</p>
       <h4>${phase.title}</h4>
       <p class="proof-description">${phase.description}</p>

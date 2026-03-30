@@ -754,6 +754,10 @@ body {
   display: block;
 }
 
+.phase-proof-card[hidden] {
+  display: none !important;
+}
+
 .proof-eyebrow {
   margin: 0;
   color: var(--accent);

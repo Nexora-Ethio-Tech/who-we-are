@@ -1159,6 +1159,7 @@ function initGovernanceProof() {
     proofCards.forEach((card) => {
       const isActive = card.dataset.phaseProof === String(index);
       card.classList.toggle("is-active", isActive);
+      card.hidden = !isActive;
     });
 
     const activeButton = Array.from(phaseButtons).find(
