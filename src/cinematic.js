@@ -171,7 +171,7 @@ function initUniverseBackdrop(qualityTier) {
 
   const reduceMotion = prefersReducedMotion();
   const starCount =
-    qualityTier === "high" ? 220 : qualityTier === "medium" ? 160 : 100;
+    qualityTier === "high" ? 340 : qualityTier === "medium" ? 240 : 130;
 
   const stars = [];
   const shootingStars = [];
@@ -194,9 +194,9 @@ function initUniverseBackdrop(qualityTier) {
       stars.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        r: rand(0.35, 1.55),
-        baseA: rand(0.2, 0.9),
-        twinkle: rand(0.0008, 0.0035),
+        r: rand(0.4, 1.85),
+        baseA: rand(0.28, 0.98),
+        twinkle: rand(0.001, 0.0046),
         phase: rand(0, Math.PI * 2),
       });
     }
@@ -211,9 +211,9 @@ function initUniverseBackdrop(qualityTier) {
     const x = fromTop ? rand(width * 0.05, width * 0.95) : rand(-50, width * 0.5);
     const y = fromTop ? rand(-40, height * 0.38) : rand(0, height * 0.28);
     const angle = rand(0.35, 0.75);
-    const speed = rand(520, 900);
-    const len = rand(110, 220);
-    const life = rand(0.65, 1.2);
+    const speed = qualityTier === "high" ? rand(640, 1080) : rand(560, 940);
+    const len = qualityTier === "high" ? rand(180, 340) : rand(140, 260);
+    const life = qualityTier === "high" ? rand(0.8, 1.45) : rand(0.72, 1.25);
 
     shootingStars.push({
       x,
@@ -223,15 +223,20 @@ function initUniverseBackdrop(qualityTier) {
       len,
       age: 0,
       life,
-      glow: rand(0.6, 1),
+      glow: rand(0.72, 1),
       hue: Math.random() > 0.5 ? "71, 213, 196" : "255, 155, 84",
     });
 
-    nextShotAt = time + rand(1100, 5200);
+    nextShotAt =
+      qualityTier === "high"
+        ? time + rand(700, 2600)
+        : qualityTier === "medium"
+          ? time + rand(1000, 3600)
+          : time + rand(1600, 5200);
   };
 
   let prevTime = performance.now();
-  nextShotAt = prevTime + rand(1000, 2600);
+  nextShotAt = prevTime + (qualityTier === "high" ? rand(500, 1800) : rand(900, 2400));
 
   const render = (time) => {
     const delta = Math.min(0.05, (time - prevTime) / 1000);
@@ -241,7 +246,7 @@ function initUniverseBackdrop(qualityTier) {
 
     // Twinkling static stars
     for (const star of stars) {
-      const pulse = Math.sin(time * star.twinkle + star.phase) * 0.25;
+      const pulse = Math.sin(time * star.twinkle + star.phase) * 0.34;
       const alpha = Math.max(0.05, Math.min(1, star.baseA + pulse));
       ctx.fillStyle = `rgba(234, 247, 245, ${alpha})`;
       ctx.beginPath();
@@ -275,7 +280,7 @@ function initUniverseBackdrop(qualityTier) {
       grad.addColorStop(1, `rgba(${s.hue}, 0)`);
 
       ctx.strokeStyle = grad;
-      ctx.lineWidth = 1.6;
+      ctx.lineWidth = qualityTier === "high" ? 2 : 1.8;
       ctx.beginPath();
       ctx.moveTo(s.x, s.y);
       ctx.lineTo(tailX, tailY);
