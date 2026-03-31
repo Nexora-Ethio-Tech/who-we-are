@@ -207,10 +207,34 @@ function initUniverseBackdrop(qualityTier) {
       return;
     }
 
-    const fromTop = Math.random() > 0.35;
-    const x = fromTop ? rand(width * 0.05, width * 0.95) : rand(-50, width * 0.5);
-    const y = fromTop ? rand(-40, height * 0.38) : rand(0, height * 0.28);
-    const angle = rand(0.35, 0.75);
+    // Spawn from random screen edge and fly inward with varied direction.
+    const edge = Math.floor(Math.random() * 4);
+    let x = 0;
+    let y = 0;
+    let angle = 0;
+
+    if (edge === 0) {
+      // top -> down (can go left or right)
+      x = rand(-40, width + 40);
+      y = -40;
+      angle = rand(0.35, 2.79);
+    } else if (edge === 1) {
+      // right -> left
+      x = width + 40;
+      y = rand(-30, height + 30);
+      angle = rand(2.35, 3.93);
+    } else if (edge === 2) {
+      // bottom -> up
+      x = rand(-40, width + 40);
+      y = height + 40;
+      angle = rand(-2.79, -0.35);
+    } else {
+      // left -> right
+      x = -40;
+      y = rand(-30, height + 30);
+      angle = rand(-0.79, 0.79);
+    }
+
     const speed = qualityTier === "high" ? rand(640, 1080) : rand(560, 940);
     const len = qualityTier === "high" ? rand(180, 340) : rand(140, 260);
     const life = qualityTier === "high" ? rand(0.8, 1.45) : rand(0.72, 1.25);
