@@ -156,25 +156,25 @@ export const companyProfile = {
     },
     {
       id: "banking",
-      sector: "Banking",
-      title: "Compliance and Core Scale Upgrade",
+      sector: "Education",
+      title: "School Management System Rollout",
       before: {
-        icon: "🏦",
+        icon: "🏫",
         challenges: [
-          "Legacy release process with high manual risk",
-          "Compliance checks done late in delivery cycle",
-          "Performance degradation under peak usage",
+          "Student records were fragmented across manual spreadsheets",
+          "Attendance and grading workflows were inconsistent across departments",
+          "Administrative reporting took too long during peak school periods",
         ],
       },
       after: {
         icon: "⚙️",
         improvements: [
-          "Automated release and verification pipeline",
-          "Embedded compliance gates before deployment",
-          "Stable throughput under high transaction volume",
+          "Centralized student, attendance, and grading records",
+          "Automated class, exam, and report workflows",
+          "Faster dashboard reporting for school leadership",
         ],
-        metric: "3x",
-        label: "release throughput",
+        metric: "2.5x",
+        label: "faster admin operations",
       },
     },
     {
@@ -396,10 +396,10 @@ export const siteLocales = {
         },
         {
           id: "banking",
-          sector: "ባንክ",
-          title: "የኮምፕላያንስ እና ስፋት ማሻሻያ",
-          before: { icon: "🏦", challenges: ["ከፍተኛ የእጅ ስራ አደጋ ያለው የሪሊዝ ሂደት", "የኮምፕላያንስ ምርመራ የዘገየ", "በከፍተኛ ጭነት የፍጥነት መቀነስ"] },
-          after: { icon: "⚙️", improvements: ["አውቶማቲክ ሪሊዝ እና ማረጋገጫ", "ከማቅረብ በፊት የኮምፕላያንስ መግቢያ", "በከፍተኛ ጭነት ውስጥ የተረጋጋ አፈፃፀም"], metric: "3x", label: "የሪሊዝ ፍጥነት" },
+          sector: "ትምህርት",
+          title: "የት/ቤት አስተዳደር ስርዓት ማስጀመር",
+          before: { icon: "🏫", challenges: ["የተማሪ መረጃ በሰንጠረዥ ተበታትኖ ነበር", "የመገኘትና የውጤት ሂደቶች በዲፓርትመንት መካከል አልተመሳሰሉም", "በከፍተኛ የትምህርት ወቅት አስተዳደራዊ ሪፖርት ይዘገይ ነበር"] },
+          after: { icon: "⚙️", improvements: ["የተማሪ፣ የመገኘት እና የውጤት መረጃ በአንድ ቦታ ተቀናጀ", "የክፍል፣ ፈተና እና ሪፖርት ሂደት በራስ-ሰር ሆነ", "ለት/ቤት አመራር ፈጣን ዳሽቦርድ ሪፖርት ተገኘ"], metric: "2.5x", label: "ፈጣን የአስተዳደር ሂደት" },
         },
         {
           id: "startup",
@@ -492,7 +492,7 @@ export const siteLocales = {
       ],
       caseStudies: [
         { id: "healthcare", sector: "Fayyaa", title: "Jijjiirama Portal Bukaataa", before: { icon: "🏥", challenges: ["Galmeen bukaataa bakka adda addaatti faca'e", "Sirni beellama tokkoon tokkoon hin jiru", "Gabaasni harkaan, murtoon ni tura"] }, after: { icon: "✅", improvements: ["Daataa walitti hidhame fi nageenya qabu", "Beellama yeroo dhugaa fi yeroo eegumsaa hir'ate", "Dashboard hojii murtoo saffisa"], metric: "85%", label: "fooyya'ina saffisa tajaajilaa" } },
-        { id: "banking", sector: "Baankii", title: "Fooyya'iinsa Compliance fi Scale", before: { icon: "🏦", challenges: ["Adeemsi release harkaa balaa qabu", "Qorannoon compliance yeroo boodaa", "Peak irratti hojiin laafaa"] }, after: { icon: "⚙️", improvements: ["Release fi verification automation", "Compliance gate deployment dura", "Peak irratti throughput tasgabbaa'aa"], metric: "3x", label: "saffisa release" } },
+        { id: "banking", sector: "Barnoota", title: "Sirna Bulchiinsa Mana Barumsaa Hojii Irra Oolmaa", before: { icon: "🏫", challenges: ["Ragaan barattootaa spreadsheet adda addaatti faca'e", "Attendance fi grading adeemsi kutaa gara kutaa hin walfakkaanne", "Yeroo hojii baay'ee gabaasni bulchiinsaa ni tura"] }, after: { icon: "⚙️", improvements: ["Ragaan barattootaa, attendance fi qabxiilee bakka tokkotti walitti qabame", "Adeemsi kutaa, qormaataa fi gabaasaa automation ta'e", "Hoggansa mana barumsaaf dashboard gabaasni saffise"], metric: "2.5x", label: "saffisa hojii bulchiinsaa" } },
         { id: "startup", sector: "Startup", title: "MVP irraa Gara Oomisha Naannootti", before: { icon: "🚧", challenges: ["MVP caasaa laafaan ijaarame", "Production health ilaalcha dhabuu", "Maamila haaraa dabaluu ulfaata"] }, after: { icon: "🚀", improvements: ["Platform modular multi-tenant qophaa'e", "Monitoring fi alerting guutuu", "Bakka haaraatti saffisaan babal'ina"], metric: "99.9%", label: "kaayyoo argamtii" } },
       ],
       showcase: [
