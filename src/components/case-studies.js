@@ -10,31 +10,31 @@ export function renderCaseStudies(profile) {
       <div class="case-header">
         <span class="case-sector">${study.sector}</span>
         <h3>${study.title}</h3>
-        <p class="case-title-note">From operational bottleneck to measurable delivery outcomes.</p>
+        <p class="case-title-note">${profile.ui.caseNote}</p>
       </div>
       
       <div class="case-comparison">
         <div class="case-column before-column">
           <div class="column-badge">
             <span class="badge-icon">${study.before.icon}</span>
-            <span class="badge-label">Before</span>
+            <span class="badge-label">${profile.ui.caseBefore}</span>
           </div>
-          <h4>Challenges</h4>
+          <h4>${profile.ui.caseChallenges}</h4>
           <ul class="case-list">
             ${study.before.challenges.map((challenge) => `<li>${challenge}</li>`).join("")}
           </ul>
         </div>
 
         <div class="case-divider">
-          <div class="arrow-icon">Transformation</div>
+          <div class="arrow-icon">${profile.ui.caseTransform}</div>
         </div>
 
         <div class="case-column after-column">
           <div class="column-badge success">
             <span class="badge-icon">${study.after.icon}</span>
-            <span class="badge-label">After</span>
+            <span class="badge-label">${profile.ui.caseAfter}</span>
           </div>
-          <h4>Outcomes</h4>
+          <h4>${profile.ui.caseOutcomes}</h4>
           <ul class="case-list results">
             ${study.after.improvements.map((improvement) => `<li>${improvement}</li>`).join("")}
           </ul>
@@ -68,9 +68,9 @@ export function renderCaseStudies(profile) {
   return `
     <section class="section-block case-studies story-chapter" id="case-studies">
       <div class="section-head reveal">
-        <p class="eyebrow">Success Stories</p>
-        <h2>Results That Speak</h2>
-        <p class="section-subtitle">See how we've transformed organizations across sectors</p>
+        <p class="eyebrow">${profile.ui.caseEyebrow}</p>
+        <h2>${profile.ui.caseTitle}</h2>
+        <p class="section-subtitle">${profile.ui.caseSubtitle}</p>
       </div>
 
       <div class="case-slider-wrap">

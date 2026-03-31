@@ -46,8 +46,8 @@ export function renderCapabilities(profile) {
     <section class="section-block capabilities story-chapter" id="capabilities-chapter">
       ${sectionTitle(
         "capabilities",
-        "What We Build",
-        "Capabilities"
+        profile.ui.capabilitiesTitle,
+        profile.ui.capabilitiesSubtitle
       )}
       <div class="feature-grid">
         ${blocks}
@@ -107,7 +107,7 @@ export function renderGovernanceWithEngine(profile) {
       <p class="proof-description">${phase.description}</p>
       <div class="proof-metric">
         <span class="proof-metric-value">${phase.proofMetric || "-"}</span>
-        <span class="proof-metric-label">${phase.proofLabel || "Measurable outcome"}</span>
+        <span class="proof-metric-label">${phase.proofLabel || profile.ui.governanceOutcomeFallback}</span>
       </div>
       <ul class="proof-list">${proofItems}</ul>
     </article>
@@ -119,8 +119,8 @@ export function renderGovernanceWithEngine(profile) {
     <section class="section-block governance story-chapter" id="governance-chapter">
       ${sectionTitle(
         "governance",
-        "How We Govern and Deliver",
-        "Structure"
+        profile.ui.governanceTitle,
+        profile.ui.governanceSubtitle
       )}
       
       <div class="governance-engine-wrap reveal">
@@ -137,12 +137,12 @@ export function renderGovernanceWithEngine(profile) {
       
       <div class="governance-grid">
         <article class="gov-card reveal">
-          <h3>Leadership</h3>
-          <p><strong>General Manager:</strong> ${profile.governance.generalManager}</p>
-          <p><strong>Deputy Manager:</strong> ${profile.governance.deputyManager}</p>
+          <h3>${profile.ui.governanceLeadership}</h3>
+          <p><strong>${profile.ui.governanceGeneralManager}:</strong> ${profile.governance.generalManager}</p>
+          <p><strong>${profile.ui.governanceDeputyManager}:</strong> ${profile.governance.deputyManager}</p>
         </article>
         <article class="gov-card reveal">
-          <h3>Operational Principles</h3>
+          <h3>${profile.ui.governanceOps}</h3>
           <ul>${items}</ul>
         </article>
       </div>
@@ -164,7 +164,7 @@ export function renderRoadmap(profile) {
 
   return `
     <section class="section-block roadmap story-chapter" id="roadmap-chapter">
-      ${sectionTitle("roadmap", "Where We Are Going", "Vision")}
+      ${sectionTitle("roadmap", profile.ui.roadmapTitle, profile.ui.roadmapSubtitle)}
       <div class="timeline-wrap">
         ${steps}
       </div>
@@ -179,19 +179,18 @@ export function renderContact(profile) {
   return `
     <section class="section-block contact story-chapter" id="contact">
       <div class="contact-panel reveal">
-        <p class="eyebrow">Contact</p>
-        <h2>Let's Build Something Real Together</h2>
+        <p class="eyebrow">${profile.ui.contactEyebrow}</p>
+        <h2>${profile.ui.contactTitle}</h2>
         <p>
-          We collaborate with institutions, startups, and teams that want practical,
-          scalable digital systems.
+          ${profile.ui.contactCopy}
         </p>
         <div class="contact-list">
-          <p><strong>Telegram:</strong> <a href="https://t.me/${primary.telegram.replace("@", "")}" target="_blank" rel="noopener noreferrer">${primary.telegram}</a> <span class="divider">||</span> <a href="https://t.me/${alternate.telegram.replace("@", "")}" target="_blank" rel="noopener noreferrer">${alternate.telegram}</a></p>
-          <p><strong>Phone:</strong> <a href="tel:${primary.phone}">${primary.phone}</a> <span class="divider">||</span> <a href="tel:${alternate.phone}">${alternate.phone}</a></p>
-          <p><strong>Location:</strong> ${profile.office}</p>
+          <p><strong>${profile.ui.contactTelegram}:</strong> <a href="https://t.me/${primary.telegram.replace("@", "")}" target="_blank" rel="noopener noreferrer">${primary.telegram}</a> <span class="divider">||</span> <a href="https://t.me/${alternate.telegram.replace("@", "")}" target="_blank" rel="noopener noreferrer">${alternate.telegram}</a></p>
+          <p><strong>${profile.ui.contactPhone}:</strong> <a href="tel:${primary.phone}">${primary.phone}</a> <span class="divider">||</span> <a href="tel:${alternate.phone}">${alternate.phone}</a></p>
+          <p><strong>${profile.ui.contactLocation}:</strong> ${profile.office}</p>
         </div>
         <p class="contact-note">${profile.contact.note}</p>
-        <a class="btn-primary magnetic" href="./work-with-us.html">Start a Project</a>
+        <a class="btn-primary magnetic" href="./work-with-us.html">${profile.ui.contactStartProject}</a>
       </div>
     </section>
   `;

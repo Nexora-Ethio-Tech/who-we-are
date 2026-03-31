@@ -14,12 +14,12 @@ export function renderHero(profile) {
         <h1>${profile.tagline}</h1>
         <p class="hero-copy">${highlightedIntro}</p>
         <div class="hero-actions">
-          <a class="btn-primary magnetic" href="#capabilities">Explore Services</a>
-          <a class="btn-secondary magnetic" href="#governance">How We Operate</a>
+          <a class="btn-primary magnetic" href="#capabilities">${profile.ui.heroExplore}</a>
+          <a class="btn-secondary magnetic" href="#governance">${profile.ui.heroOperate}</a>
         </div>
         <div class="hero-meta">
           <span>Head Office: ${profile.office}</span>
-          <span>Built for long-term digital impact</span>
+          <span>${profile.ui.heroMetaImpact}</span>
         </div>
       </div>
     </section>
