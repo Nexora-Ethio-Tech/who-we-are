@@ -92,11 +92,12 @@ export function renderGovernanceWithEngine(profile) {
     .map((phase, index) => {
       const proofItems = (phase.proof || []).map((entry) => `<li>${entry}</li>`).join("");
       const proofId = `phase-proof-${index}`;
+      const phaseNum = phase.phaseNumber || String(index + 1).padStart(2, "0");
       return `
     <button class="engine-phase" type="button" data-phase-index="${index}" data-case-target="${phase.caseStudyId || ""}" aria-expanded="${index === 0 ? "true" : "false"}" aria-controls="${proofId}">
       <div class="phase-ring"></div>
       <div class="phase-label">
-        <span class="phase-num">${phase.phase.split(" ")[1]}</span>
+        <span class="phase-num">${phaseNum}</span>
         <span class="phase-title">${phase.title}</span>
         <span class="phase-focus">${phase.focus || "Execution focus"}</span>
       </div>

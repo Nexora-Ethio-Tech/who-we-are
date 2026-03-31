@@ -6,6 +6,23 @@ export function renderNavbar(profile, state) {
   const lang = state?.lang || "en";
   const theme = state?.theme || "dark";
 
+  const langButtons = [
+    { value: "en", label: "EN" },
+    { value: "am", label: "AM" },
+    { value: "om", label: "OM" },
+  ]
+    .map(
+      (item) => `
+      <button
+        type="button"
+        class="lang-btn ${lang === item.value ? "is-active" : ""}"
+        data-lang-btn="${item.value}"
+        aria-pressed="${lang === item.value ? "true" : "false"}"
+      >${item.label}</button>
+    `
+    )
+    .join("");
+
   return `
     <header class="topbar reveal">
       <div class="brand-wrap">
@@ -19,14 +36,9 @@ export function renderNavbar(profile, state) {
         ${links}
       </nav>
       <div class="topbar-actions">
-        <label class="lang-wrap" for="lang-select">
-          <span class="sr-only">Language</span>
-          <select id="lang-select" class="lang-select" aria-label="Language">
-            <option value="en" ${lang === "en" ? "selected" : ""}>EN</option>
-            <option value="am" ${lang === "am" ? "selected" : ""}>AM</option>
-            <option value="om" ${lang === "om" ? "selected" : ""}>OM</option>
-          </select>
-        </label>
+        <div class="lang-switch" role="group" aria-label="Language">
+          ${langButtons}
+        </div>
         <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">
           ${theme === "light" ? profile.ui.themeDark : profile.ui.themeLight}
         </button>

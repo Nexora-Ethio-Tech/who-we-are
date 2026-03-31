@@ -1348,7 +1348,7 @@ function initGovernanceProof() {
     });
   });
 }
-export function setupCinematic() {
+export function setupCinematic(profile = {}) {
   const capabilities = getEnhancedCapabilityTier();
   const qualityTier = capabilities.tier;
 
@@ -1365,7 +1365,7 @@ export function setupCinematic() {
   initCaseStudiesSlider();
   initGovernanceEngine();
   initGovernanceProof();
-  initAIChatWidget();
+  initAIChatWidget(profile);
   initShowcaseVideos();
 
   if ("requestIdleCallback" in window) {

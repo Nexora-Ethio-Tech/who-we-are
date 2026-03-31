@@ -18,7 +18,7 @@ export function renderHero(profile) {
           <a class="btn-secondary magnetic" href="#governance">${profile.ui.heroOperate}</a>
         </div>
         <div class="hero-meta">
-          <span>Head Office: ${profile.office}</span>
+          <span>${profile.ui.heroHeadOffice}: ${profile.office}</span>
           <span>${profile.ui.heroMetaImpact}</span>
         </div>
       </div>

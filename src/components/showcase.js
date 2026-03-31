@@ -22,7 +22,7 @@ export function renderShowcase(profile) {
             muted 
             loop 
             playsinline
-            aria-label="Demo video for ${item.title}"
+            aria-label="${profile.ui.showcaseDemoLabel}: ${item.title}"
             style="display: none;"
           ></video>
         </div>
@@ -45,9 +45,9 @@ export function renderShowcase(profile) {
   return `
     <section class="section-block showcase story-chapter" id="showcase">
       <div class="section-head reveal">
-        <p class="eyebrow">Our Work</p>
-        <h2>Built by Nexora</h2>
-        <p class="section-subtitle">Real products solving real problems across sectors</p>
+        <p class="eyebrow">${profile.ui.showcaseEyebrow}</p>
+        <h2>${profile.ui.showcaseTitle}</h2>
+        <p class="section-subtitle">${profile.ui.showcaseSubtitle}</p>
       </div>
 
       <div class="showcase-grid">

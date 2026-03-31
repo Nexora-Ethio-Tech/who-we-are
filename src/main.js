@@ -29,6 +29,8 @@ const state = {
   theme: localStorage.getItem(STORAGE_THEME) || "dark",
 };
 
+let currentProfile = null;
+
 function applyTheme(theme) {
   state.theme = theme === "light" ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", state.theme);
@@ -36,14 +38,20 @@ function applyTheme(theme) {
 }
 
 function bindControls() {
-  const langSelect = document.querySelector("#lang-select");
   const themeToggle = document.querySelector("#theme-toggle");
+  const langButtons = document.querySelectorAll("[data-lang-btn]");
 
-  if (langSelect) {
-    langSelect.addEventListener("change", (event) => {
-      const nextLang = event.target.value;
-      localStorage.setItem(STORAGE_LANG, nextLang);
-      window.location.reload();
+  if (langButtons.length) {
+    langButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const nextLang = button.getAttribute("data-lang-btn");
+        if (!nextLang || nextLang === state.lang) {
+          return;
+        }
+
+        localStorage.setItem(STORAGE_LANG, nextLang);
+        window.location.reload();
+      });
     });
   }
 
@@ -73,6 +81,7 @@ function bindRevealObserver() {
 
 function render() {
   const profile = getLocalizedProfile(state.lang);
+  currentProfile = profile;
 
   app.innerHTML = `
     <div class="site-shell">
@@ -96,4 +105,4 @@ function render() {
 
 applyTheme(state.theme);
 render();
-setupCinematic();
+setupCinematic(currentProfile || getLocalizedProfile(state.lang));
