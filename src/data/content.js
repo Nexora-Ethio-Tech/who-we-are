@@ -202,7 +202,7 @@ export const companyProfile = {
     },
   ],
   contact: {
-    inboxEmail: "yonasayeletola62@gmail.com,nexoratechnologyplc@gmail.com",
+    inboxEmail: "nexoratechnologyplc@gmail.com",
     inquiryEndpoint: "",
     primary: {
       telegram: "@JYAT6200",
@@ -210,7 +210,6 @@ export const companyProfile = {
       github: "https://github.com/yonayetol",
     },
     alternate: {
-       inboxEmail: "nexoratechnologyplc@gmail.com",
       telegram: "@valerioE",
       phone: "+251965758511",
       github: "https://github.com/hailevalerio-65",
